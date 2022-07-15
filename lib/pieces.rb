@@ -1,3 +1,5 @@
+require 'colorize'
+
 class String
   def symbol
     " "

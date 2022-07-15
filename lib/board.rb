@@ -1,4 +1,5 @@
-require 'pieces.rb'
+require '/pieces.rb'
+require '/team.rb'
 
 class Board < Team
   attr_accessor :board

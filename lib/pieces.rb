@@ -53,4 +53,4 @@ class King
   def initialize(color)
     @symbol = "\u265A".colorize(:color => color)
   end
-end
+end 

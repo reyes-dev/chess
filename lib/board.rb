@@ -31,3 +31,13 @@ class Board < Team
         5 => Square.new(@white_king, :light_red), 6 => Square.new(@white_bishop2, :light_white), 7 => Square.new(@white_knight2, :light_red), 8 => Square.new(@white_rook2, :light_white)}
     }
   end
+
+  def display_board
+    i = 8
+    while i >= 1
+      @board[i].each { |k, v| print v.space }
+      puts "\n"
+      i = i - 1
+    end
+  end
+end

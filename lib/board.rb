@@ -50,4 +50,16 @@ class Board < Team
     @board[x][y].piece = temp
     @board[x][y].space = " #{@board[x][y].piece.symbol} ".colorize(:background => @board[x][y].color)
   end
+
+  def moving
+    loop do
+      puts "Enter starting position: "
+      old_pos = gets.chomp.split("").map(&:to_i)
+      puts "Enter where you want to go: "
+      new_pos = gets.chomp.split("").each { |x| x.to_i }.map(&:to_i)
+
+      self.move_to(new_pos[0], new_pos[1], old_pos)
+      self.display_board
+    end
+  end
 end

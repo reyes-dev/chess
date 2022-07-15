@@ -40,4 +40,14 @@ class Board < Team
       i = i - 1
     end
   end
+
+  def move_to(x, y, current)
+    # old space emptied
+    temp = @board[current[0]][current[1]].piece
+    @board[current[0]][current[1]].piece = " "
+    @board[current[0]][current[1]].space = " #{@board[current[0]][current[1]].piece} ".colorize(:background => @board[current[0]][current[1]].color)
+    # new space filled
+    @board[x][y].piece = temp
+    @board[x][y].space = " #{@board[x][y].piece.symbol} ".colorize(:background => @board[x][y].color)
+  end
 end

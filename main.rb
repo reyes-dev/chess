@@ -5,4 +5,3 @@ require_relative 'lib/pieces.rb'
 board = Board.new
 board.display_board
 board.moving
-puts "\n"

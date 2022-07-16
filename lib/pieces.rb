@@ -17,10 +17,17 @@ class Square
 end
 
 class Pawn
-  attr_accessor :symbol
+  attr_accessor :symbol, :legal_moves, :moved_once
 
   def initialize(color)
     @symbol = "\u265F".colorize(color: color)
+    @legal_moves = []
+    @moved_once = false
+  end
+  # Generates legal moves for the pawn from the current position
+  def generate_legals(current)
+    @legal_moves << [current[0] + 1, current[1]]
+    @legal_moves << [current[0] + 2, current[1]] if @moved_once == false
   end
 end
 

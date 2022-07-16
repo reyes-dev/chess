@@ -84,7 +84,7 @@ class Board < Team
   def display_board
     i = 8
     while i >= 1
-      @board[i].each { |k, v| print v.space }
+      @board[i].each { |_k, v| print v.space }
       puts "\n"
       i -= 1
     end
@@ -96,7 +96,7 @@ class Board < Team
     chosen_piece = @board[current[0]][current[1]].piece
     chosen_piece.generate_legals(current)
 
-    if chosen_piece.legal_moves.any?([x, y])
+    if chosen_piece.legal_moves.any?([x, y]) && @board[x][y].piece == ' '
       # old space emptied
       @board[current[0]][current[1]].piece = ' '
       @board[current[0]][current[1]].space = " #{@board[current[0]][current[1]].piece} ".colorize(background: @board[current[0]][current[1]].color)
@@ -106,9 +106,7 @@ class Board < Team
 
       chosen_piece.legal_moves.clear
 
-      if chosen_piece.class == Pawn
-        chosen_piece.moved_once = true
-      end
+      chosen_piece.moved_once = true if chosen_piece.instance_of?(Pawn)
     end
   end
 

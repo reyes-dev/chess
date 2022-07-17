@@ -94,7 +94,7 @@ class Board < Team
     # old piece stored in a temporary variable
     # to be moved to the chosen square
     chosen_piece = @board[current[0]][current[1]].piece
-    chosen_piece.generate_legals(current)
+    chosen_piece.generate_legals(current, @board)
 
     if chosen_piece.legal_moves.any?([x, y]) && @board[x][y].piece == ' '
       # old space emptied

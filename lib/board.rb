@@ -89,36 +89,4 @@ class Board < Team
       i -= 1
     end
   end
-
-  def move_to(x, y, current)
-    # old piece stored in a temporary variable
-    # to be moved to the chosen square
-    chosen_piece = @board[current[0]][current[1]].piece
-    chosen_piece.generate_legals(current, @board)
-
-    if chosen_piece.legal_moves.any?([x, y])
-      # old space emptied
-      @board[current[0]][current[1]].piece = ' '
-      @board[current[0]][current[1]].space = " #{@board[current[0]][current[1]].piece} ".colorize(background: @board[current[0]][current[1]].color)
-      # new space filled
-      @board[x][y].piece = chosen_piece
-      @board[x][y].space = " #{@board[x][y].piece.symbol} ".colorize(background: @board[x][y].color)
-
-      chosen_piece.legal_moves.clear
-
-      chosen_piece.moved_once = true if chosen_piece.instance_of?(Pawn)
-    end
-  end
-
-  def moving
-    loop do
-      puts 'Enter starting position: '
-      old_pos = gets.chomp.split('').map(&:to_i)
-      puts 'Enter where you want to go: '
-      new_pos = gets.chomp.split('').each { |x| x.to_i }.map(&:to_i)
-
-      move_to(new_pos[0], new_pos[1], old_pos)
-      display_board
-    end
-  end
 end

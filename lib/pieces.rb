@@ -19,8 +19,9 @@ end
 class Pawn
   attr_accessor :symbol, :legal_moves, :moved_once
 
-  def initialize(color)
+  def initialize(color, team)
     @symbol = "\u265F".colorize(color: color)
+    @team = team
     @legal_moves = []
     @moved_once = false
   end
@@ -34,39 +35,44 @@ end
 class Rook
   attr_accessor :symbol
 
-  def initialize(color)
+  def initialize(color, team)
     @symbol = "\u265C".colorize(color: color)
+    @team = team
   end
 end
 
 class Knight
   attr_accessor :symbol
 
-  def initialize(color)
+  def initialize(color, team)
     @symbol = "\u265E".colorize(color: color)
+    @team = team
   end
 end
 
 class Bishop
   attr_accessor :symbol
 
-  def initialize(color)
+  def initialize(color, team)
     @symbol = "\u265D".colorize(color: color)
+    @team = team
   end
 end
 
 class Queen
   attr_accessor :symbol
 
-  def initialize(color)
+  def initialize(color, team)
     @symbol = "\u265B".colorize(color: color)
+    @team = team
   end
 end
 
 class King
   attr_accessor :symbol
 
-  def initialize(color)
+  def initialize(color, team)
     @symbol = "\u265A".colorize(color: color)
+    @team = team
   end
 end

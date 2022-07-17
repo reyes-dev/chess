@@ -1,20 +1,5 @@
 require 'colorize'
-
-class String
-  def symbol
-    ' '
-  end
-end
-
-class Square
-  attr_accessor :piece, :color, :space
-
-  def initialize(piece = ' ', color)
-    @piece = piece
-    @color = color
-    @space = " #{piece.symbol} ".colorize(background: @color)
-  end
-end
+require_relative 'board.rb'
 
 class Pawn
   attr_accessor :symbol, :legal_moves, :moved_once

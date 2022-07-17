@@ -1,6 +1,22 @@
 require_relative 'pieces'
 require_relative 'team'
 
+class String
+  def symbol
+    ' '
+  end
+end
+
+class Square
+  attr_accessor :piece, :color, :space
+
+  def initialize(piece = ' ', color)
+    @piece = piece
+    @color = color
+    @space = " #{piece.symbol} ".colorize(background: @color)
+  end
+end
+
 class Board < Team
   attr_accessor :board
 

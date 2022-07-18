@@ -4,7 +4,7 @@ require_relative 'pieces.rb'
 
 class GamePlay
   attr_accessor :old_pos, :new_pos
-  
+
   def initialize
     @old_pos = nil
     @new_pos = nil

@@ -5,6 +5,10 @@ class String
   def symbol
     ' '
   end
+
+  def team
+
+  end
 end
 
 class Square

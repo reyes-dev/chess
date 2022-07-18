@@ -77,12 +77,32 @@ class Rook
 end
 
 class Knight
-  attr_accessor :symbol
+  attr_accessor :symbol, :legal_moves
   attr_reader :team
 
   def initialize(color, team)
     @symbol = "\u265E".colorize(color: color)
     @team = team
+    @legal_moves = []
+  end
+  # Imitates the L-shape Knight's can move in
+  def possible_moves
+    [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
+  end
+  # Compares chosen piece to piece on a landing spot
+  # Returning true when both squares aren't the same team
+  def check_team(start, fin, board)
+    board[fin[0]][fin[1]].piece.team != board[start[0]][start[1]].piece.team
+  end
+  # Gives all the moves Knight is allowed to make
+  # From it's current position on the board
+  def generate_legals(start, board)
+    # Using chosen piece's coordinate, combine with each possible move
+    0.upto(7) { |n| @legal_moves << (0..1).map { |i| start[i] + possible_moves[n][i] } }
+    # Filter that result by keeping arrays where both elements are between 1 and 8
+    @legal_moves.select! { |sqr| sqr[0].between?(1, 8) && sqr[1].between?(1, 8) }
+    # Further filter out squares with friendly pieces
+    @legal_moves.select! { |sqr| check_team(start, sqr, board) }
   end
 end
 

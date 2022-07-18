@@ -107,12 +107,55 @@ class Knight
 end
 
 class Bishop
-  attr_accessor :symbol
+  attr_accessor :symbol, :legal_moves
   attr_reader :team
 
   def initialize(color, team)
     @symbol = "\u265D".colorize(color: color)
     @team = team
+    @legal_moves = []
+  end
+
+  def friendly?(start, chosen, board)
+    unless board[start[0] + 1][start[1] - 1].nil?
+      board[start[0] + 1][start[1] - 1].piece.team == board[chosen[0]][chosen[1]].piece.team
+    end
+  end
+
+  def enemy?(tile, board)
+    board[tile[0]][tile[1]].piece != ' '
+  end
+
+  def out_of_bounds?(start)
+    !((start[0] + 1).between?(1, 8) && (start[1] - 1).between?(1, 8))
+  end
+  # This is supposed to add new coordinates to legal_moves
+  def top_left_diag(start, board)
+    loop do
+      if out_of_bounds?(start) || friendly?(start, start, board)
+        break
+      elsif @legal_moves.empty?
+        @legal_moves << (0..1).map { |i| start[i] + [1, -1][i] }
+      else
+        break if friendly?(@legal_moves.last, start, board) 
+        break if out_of_bounds?(@legal_moves.last)
+        @legal_moves << (0..1).map { |i| @legal_moves.last[i] + [1, -1][i] }
+        break if enemy?(@legal_moves.last, board)
+      end
+    end
+  end
+
+  def top_right_diag(start, board)
+  end
+
+  def bottom_left_diag(start, board)
+  end
+
+  def bottom_right_diag(start, board)
+  end
+
+  def generate_legals(start, board)
+    top_left_diag(start, board)
   end
 end
 

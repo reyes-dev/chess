@@ -13,19 +13,32 @@ class Pawn
     @moved_once = false
   end
 
-  def white_moves(start)
-    @legal_moves << [start[0] + 1, start[1]]
-    @legal_moves << [start[0] + 2, start[1]] if @moved_once == false
+  def is_enemy?(start, board, diag)
+    enemy = board[start[0] + diag[0]][start[1] + diag[1]].piece.team
+    ally = board[start[0]][start[1]].piece.team
+
+    unless enemy.nil?
+      enemy != ally
+    end
   end
 
-  def black_moves(start)
+  def white_moves(start, board)
+    @legal_moves << [start[0] + 1, start[1]]
+    @legal_moves << [start[0] + 2, start[1]] if @moved_once == false
+    @legal_moves << [start[0] + 1, start[1] - 1] if is_enemy?(start, board, [1, -1])
+    @legal_moves << [start[0] + 1, start[1] + 1] if is_enemy?(start, board, [1, 1])
+  end
+
+  def black_moves(start, board)
     @legal_moves << [start[0] - 1, start[1]]
     @legal_moves << [start[0] - 2, start[1]] if @moved_once == false
+    @legal_moves << [start[0] - 1, start[1] + 1] if is_enemy?(start, board, [-1, 1])
+    @legal_moves << [start[0] - 1, start[1] - 1] if is_enemy?(start, board, [-1, -1])
   end
 
   # Generates legal moves for the pawn from the current position
   def generate_legals(start, board)
-    @team == 'white' ? white_moves(start) : black_moves(start)
+    @team == 'white' ? white_moves(start, board) : black_moves(start, board)
   end
 end
 

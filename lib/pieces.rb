@@ -90,11 +90,22 @@ class Queen
 end
 
 class King
-  attr_accessor :symbol
+  include KnightMovement
+
+  attr_accessor :symbol, :legal_moves
   attr_reader :team
 
   def initialize(color, team)
     @symbol = "\u265A".colorize(color: color)
     @team = team
+    @legal_moves = []
+  end
+
+  def possible_moves
+    [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]]
+  end
+
+  def generate_legals(start, board)
+    knight_legals(start, board)
   end
 end

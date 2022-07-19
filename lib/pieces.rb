@@ -12,10 +12,20 @@ class Pawn
     @legal_moves = []
     @moved_once = false
   end
+
+  def white_moves(start)
+    @legal_moves << [start[0] + 1, start[1]]
+    @legal_moves << [start[0] + 2, start[1]] if @moved_once == false
+  end
+
+  def black_moves(start)
+    @legal_moves << [start[0] - 1, start[1]]
+    @legal_moves << [start[0] - 2, start[1]] if @moved_once == false
+  end
+
   # Generates legal moves for the pawn from the current position
-  def generate_legals(current, board)
-    @legal_moves << [current[0] + 1, current[1]]
-    @legal_moves << [current[0] + 2, current[1]] if @moved_once == false
+  def generate_legals(start, board)
+    @team == 'white' ? white_moves(start) : black_moves(start)
   end
 end
 

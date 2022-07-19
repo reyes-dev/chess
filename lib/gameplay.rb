@@ -13,9 +13,9 @@ class GamePlay
   end
 
   def set_positions
-    puts 'Enter starting position: '
+    print 'Enter starting position: '
     @old_pos = gets.chomp.split('').map(&:to_i)
-    puts 'Enter where you want to go: '
+    print 'Enter where you want to go: '
     @new_pos = gets.chomp.split('').map(&:to_i)
   end
 
@@ -35,7 +35,7 @@ class GamePlay
 
   def play(gameboard)
     loop do
-      puts "--#{@turn}'s turn--"
+      puts "   --#{@turn}'s turn--\n"
       gameboard.display_board
       board = gameboard.board
       set_positions

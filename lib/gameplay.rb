@@ -13,6 +13,7 @@ class GamePlay
   end
 
   def set_positions
+    puts "\n"
     print 'Enter starting position: '
     @old_pos = gets.chomp.split('').map(&:to_i)
     print 'Enter where you want to go: '
@@ -35,7 +36,9 @@ class GamePlay
 
   def play(gameboard)
     loop do
-      puts "   --#{@turn}'s turn--\n"
+      puts "    --#{@turn}'s turn--\n"
+      puts "\n"
+      
       gameboard.display_board
       board = gameboard.board
       set_positions
@@ -50,6 +53,8 @@ class GamePlay
       chessman.legal_moves.clear
       chessman.instance_of?(Pawn) ? chessman.moved_once = true : nil
       switch_turns
+
+      puts "\n"
     end
   end 
 end

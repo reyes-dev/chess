@@ -116,9 +116,13 @@ class Bishop
     @legal_moves = []
   end
 
-  def friendly?(start, chosen, board)
-    unless board[start[0] + 1][start[1] - 1].nil?
-      board[start[0] + 1][start[1] - 1].piece.team == board[chosen[0]][chosen[1]].piece.team
+  def directions
+    [[1, -1], [1, 1], [-1, 1], [-1, -1]]
+  end
+
+  def friendly?(start, chosen, board, dir)
+    unless board[start[0] + dir[0]][start[1] + dir[1]].nil?
+      board[start[0] + dir[0]][start[1] + dir[1]].piece.team == board[chosen[0]][chosen[1]].piece.team
     end
   end
 
@@ -126,36 +130,32 @@ class Bishop
     board[tile[0]][tile[1]].piece != ' '
   end
 
-  def out_of_bounds?(start)
-    !((start[0] + 1).between?(1, 8) && (start[1] - 1).between?(1, 8))
+  def out_of_bounds?(start, dir)
+    !((start[0] + dir[0]).between?(1, 8) && (start[1] + dir[1]).between?(1, 8))
   end
-  # This is supposed to add new coordinates to legal_moves
-  def top_left_diag(start, board)
+
+  def find_diagonals(start, board, dir)
+    legal_diags = []
+
     loop do
-      if out_of_bounds?(start) || friendly?(start, start, board)
+      if out_of_bounds?(start, dir) || friendly?(start, start, board, dir)
         break
-      elsif @legal_moves.empty?
-        @legal_moves << (0..1).map { |i| start[i] + [1, -1][i] }
+      elsif legal_diags.empty?
+        legal_diags << (0..1).map { |i| start[i] + dir[i] }
+        break if enemy?(legal_diags.last, board)
       else
-        break if friendly?(@legal_moves.last, start, board) 
-        break if out_of_bounds?(@legal_moves.last)
-        @legal_moves << (0..1).map { |i| @legal_moves.last[i] + [1, -1][i] }
-        break if enemy?(@legal_moves.last, board)
+        break if out_of_bounds?(legal_diags.last, dir)
+        break if friendly?(legal_diags.last, start, board, dir)
+        legal_diags << (0..1).map { |i| legal_diags.last[i] + dir[i] }
+        break if enemy?(legal_diags.last, board)
       end
     end
-  end
 
-  def top_right_diag(start, board)
-  end
-
-  def bottom_left_diag(start, board)
-  end
-
-  def bottom_right_diag(start, board)
+    legal_diags.each { |e| @legal_moves << e }
   end
 
   def generate_legals(start, board)
-    top_left_diag(start, board)
+    directions.each { |direction| find_diagonals(start, board, direction) }
   end
 end
 

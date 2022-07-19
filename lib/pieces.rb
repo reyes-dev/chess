@@ -37,7 +37,7 @@ class Rook
 end
 
 class Knight
-  include KnightMovement
+  include EightMoves
 
   attr_accessor :symbol, :legal_moves
   attr_reader :team
@@ -48,8 +48,12 @@ class Knight
     @legal_moves = []
   end
 
+  def possible_moves
+    [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
+  end
+
   def generate_legals(start, board)
-    knight_legals(start, board)
+    eight_legals(start, board)
   end
 end
 
@@ -90,7 +94,7 @@ class Queen
 end
 
 class King
-  include KnightMovement
+  include EightMoves
 
   attr_accessor :symbol, :legal_moves
   attr_reader :team
@@ -106,6 +110,6 @@ class King
   end
 
   def generate_legals(start, board)
-    knight_legals(start, board)
+    eight_legals(start, board)
   end
 end

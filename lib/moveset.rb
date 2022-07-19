@@ -92,11 +92,7 @@ module Diagonal
   end
 end
 
-module KnightMovement
-  # Imitates the L-shape Knight's can move in
-  def possible_moves
-    [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
-  end
+module EightMoves
   # Compares chosen piece to piece on a landing spot
   # Returning true when both squares aren't the same team
   def check_team(start, fin, board)
@@ -116,7 +112,7 @@ module KnightMovement
     @legal_moves.select! { |sqr| check_team(start, sqr, board) }
   end
 
-  def knight_legals(start, board)
+  def eight_legals(start, board)
     combine_moves(start)
     filter_moves(start, board)
   end

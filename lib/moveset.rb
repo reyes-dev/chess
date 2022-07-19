@@ -59,7 +59,7 @@ module Diagonal
     end
   end
 
-  def enemy?(tile, board)
+  def pushed_enemy?(tile, board)
     board[tile[0]][tile[1]].piece != ' '
   end
 
@@ -75,12 +75,12 @@ module Diagonal
         break
       elsif legal_diags.empty?
         legal_diags << (0..1).map { |i| start[i] + dir[i] }
-        break if enemy?(legal_diags.last, board)
+        break if pushed_enemy?(legal_diags.last, board)
       else
         break if out_of_bounds?(legal_diags.last, dir)
         break if friendly?(legal_diags.last, start, board, dir)
         legal_diags << (0..1).map { |i| legal_diags.last[i] + dir[i] }
-        break if enemy?(legal_diags.last, board)
+        break if pushed_enemy?(legal_diags.last, board)
       end
     end
 

@@ -91,3 +91,33 @@ module Diagonal
     directions.each { |direction| find_diagonals(start, board, direction) }
   end
 end
+
+module KnightMovement
+  # Imitates the L-shape Knight's can move in
+  def possible_moves
+    [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
+  end
+  # Compares chosen piece to piece on a landing spot
+  # Returning true when both squares aren't the same team
+  def check_team(start, fin, board)
+    board[fin[0]][fin[1]].piece.team != board[start[0]][start[1]].piece.team
+  end
+
+  def combine_moves(start)
+    # Using chosen piece's coordinate, combine with each possible move
+    0.upto(7) { |n| @legal_moves << (0..1).map { |i| start[i] + possible_moves[n][i] } }
+  end
+  # Gives all the moves Knight is allowed to make
+  # From it's current position on the board
+  def filter_moves(start, board)
+    # Filter that result by keeping arrays where both elements are between 1 and 8
+    @legal_moves.select! { |sqr| sqr[0].between?(1, 8) && sqr[1].between?(1, 8) }
+    # Further filter out squares with friendly pieces
+    @legal_moves.select! { |sqr| check_team(start, sqr, board) }
+  end
+
+  def knight_legals(start, board)
+    combine_moves(start)
+    filter_moves(start, board)
+  end
+end

@@ -43,6 +43,10 @@ class GamePlay
     @turn, @next_turn = @next_turn, @turn
   end
 
+  def legal?(chessman, landing)
+    chessman.legal_moves.any?([landing[0], landing[1]])
+  end
+
   def play(gameboard)
     loop do
       puts "    --#{@turn}'s turn--\n"
@@ -56,9 +60,8 @@ class GamePlay
       redo unless chessman.team == @turn
       set_new_position
       chessman.generate_legals(@old_pos, board)
-      legal = chessman.legal_moves.any?([@new_pos[0], @new_pos[1]])
-      chessman.legal_moves.clear unless legal
-      redo unless legal
+      chessman.legal_moves.clear unless legal?(chessman, @new_pos)
+      redo unless legal?(chessman, @new_pos)
       move_from(@old_pos, board)
       move_to(chessman, @new_pos, board)
       chessman.legal_moves.clear

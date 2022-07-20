@@ -104,9 +104,11 @@ class Board < Team
   def display_board
     i = 8
     while i >= 1
+      print " #{i} "
       @board[i].each { |k, v| print "#{v.space}" }
       puts "\n"
       i -= 1
     end
+    print "    a  b  c  d  e  f  g  h"
   end
 end

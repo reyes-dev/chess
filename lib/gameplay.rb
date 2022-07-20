@@ -10,23 +10,35 @@ class GamePlay
     @new_pos = nil
     @turn = 'white'
     @next_turn = 'black'
+    @letters = {
+      "a" => 1,
+      "b" => 2,
+      "c" => 3,
+      "d" => 4,
+      "e" => 5,
+      "f" => 6,
+      "g" => 7,
+      "h" => 8
+    }
   end
 
   def set_old_position
     loop do
       puts "\n"
       print 'Enter starting position: '
-      @old_pos = gets.chomp.split('').map(&:to_i)
-      break if @old_pos.join.match?(/^[1-8][1-8]$/)
+      @old_pos = gets.chomp.split('')
+      break if @old_pos.join.match?(/^[a-h][1-8]$/)
     end
+    convert_letter(@old_pos)
   end
 
   def set_new_position
     loop do
       print 'Enter landing position: '
-      @new_pos = gets.chomp.split('').map(&:to_i)
-      break if @new_pos.join.match?(/^[1-8][1-8]$/)
+      @new_pos = gets.chomp.split('')
+      break if @new_pos.join.match?(/^[a-h][1-8]$/)
     end
+    convert_letter(@new_pos)
   end
 
   def move_from(start, board)
@@ -47,9 +59,14 @@ class GamePlay
     chessman.legal_moves.any?([landing[0], landing[1]])
   end
 
+  def convert_letter(char)
+    char[0] = @letters[char[0]]
+    char.map!(&:to_i).reverse!
+  end
+
   def play(gameboard)
     loop do
-      puts "    --#{@turn}'s turn--\n"
+      puts "       --#{@turn}'s turn--\n"
       puts "\n"
 
       gameboard.display_board

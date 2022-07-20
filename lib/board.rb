@@ -22,7 +22,7 @@ class Square
 end
 
 class Board < Team
-  attr_accessor :board
+  attr_accessor :board, :dbl_step_pawn, :stepped_over
 
   def initialize
     super
@@ -99,6 +99,8 @@ class Board < Team
              7 => Square.new(@white_knight2, :light_red),
              8 => Square.new(@white_rook2, :light_white) }
     }
+    @dbl_step_pawn = nil
+    @stepped_over = nil
   end
 
   def display_board

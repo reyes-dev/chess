@@ -3,7 +3,7 @@ require_relative 'board.rb'
 require_relative 'moveset.rb'
 
 class Pawn
-  attr_accessor :symbol, :legal_moves, :moved_once
+  attr_accessor :symbol, :legal_moves, :moved_once, :en_passant_allowed
   attr_reader :team
 
   def initialize(color, team)
@@ -11,15 +11,21 @@ class Pawn
     @team = team
     @legal_moves = []
     @moved_once = false
+    @double_stepped = false
+    @en_passant_allowed = false
+    @passed_over = []
   end
-
+  # Checks if a different square, which is relative to the starting square,
+  # Is nil (out of bounds) or an empty string, unless either are true it must hold a piece
+  # Compares pieces on both squares
+  # Returns true when teams aren't the same
   def is_enemy?(start, board, diag)
     square = board[start[0] + diag[0]][start[1] + diag[1]]
     unless square.nil? || square.piece == ' '
       enemy = square.piece.team
       ally = board[start[0]][start[1]].piece.team
 
-      p enemy != ally
+      enemy != ally
     end
   end
 
@@ -35,6 +41,45 @@ class Pawn
     @legal_moves << [start[0] - 2, start[1]] unless @moved_once == true || is_enemy?(start, board, [-2, 0])
     @legal_moves << [start[0] - 1, start[1] + 1] if is_enemy?(start, board, [-1, 1])
     @legal_moves << [start[0] - 1, start[1] - 1] if is_enemy?(start, board, [-1, -1])
+  end
+
+  def adjacent
+    [[0, 1], [0, -1]]
+  end
+
+  def double_step?(start, finish, pawn)
+    if pawn.team == 'white'
+      [start[0] + 2, start[1]] == [finish[0], finish[1]]
+    elsif pawn.team == 'black'
+      [start[0] - 2, start[1]] == [finish[0], finish[1]]
+    end
+  end
+
+  def sq_stepped_over(start, finish, pawn)
+    if pawn.team == 'white'
+      [start[0] + 1, start[1]]
+    elsif pawn.team == 'black'
+      [start[0] - 1, start[1]]
+    end
+  end
+
+  def en_passantable(old, fin, pawn, board, gb)
+    adjacent.each do |tile|
+      if is_enemy?(fin, board, tile) && double_step?(old, fin, pawn)
+        board[fin[0] + tile[0]][fin[1] + tile[1]].piece.en_passant_allowed = true
+        gb.dbl_step_pawn = board[fin[0]][fin[1]]
+        gb.stepped_over = sq_stepped_over(old, fin, pawn)
+      end
+    end
+  end
+
+  def en_passant(fin, board, gb, pawn)
+    if pawn.en_passant_allowed && fin == gb.stepped_over
+      pawn.legal_moves << gb.stepped_over
+      gb.dbl_step_pawn.piece = ' '
+      gb.dbl_step_pawn.space = " #{gb.dbl_step_pawn.piece.symbol} ".colorize(background: gb.dbl_step_pawn.color)
+      pawn.en_passant_allowed = false
+    end
   end
 
   # Generates legal moves for the pawn from the current position

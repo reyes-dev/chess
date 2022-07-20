@@ -14,10 +14,10 @@ class Pawn
   end
 
   def is_enemy?(start, board, diag)
-    enemy = board[start[0] + diag[0]][start[1] + diag[1]].piece.team
-    ally = board[start[0]][start[1]].piece.team
+    unless board[start[0] + diag[0]][start[1] + diag[1]].nil?
+      enemy = board[start[0] + diag[0]][start[1] + diag[1]].piece.team
+      ally = board[start[0]][start[1]].piece.team
 
-    unless enemy.nil?
       enemy != ally
     end
   end

@@ -13,11 +13,18 @@ class GamePlay
   end
 
   def set_positions
-    puts "\n"
-    print 'Enter starting position: '
-    @old_pos = gets.chomp.split('').map(&:to_i)
-    print 'Enter where you want to go: '
-    @new_pos = gets.chomp.split('').map(&:to_i)
+    loop do
+      puts "\n"
+      print 'Enter starting position: '
+      @old_pos = gets.chomp.split('').map(&:to_i)
+      break if @old_pos.join.match?(/^[1-8][1-8]$/)
+    end
+
+    loop do
+      print 'Enter landing position: '
+      @new_pos = gets.chomp.split('').map(&:to_i)
+      break if @new_pos.join.match?(/^[1-8][1-8]$/)
+    end
   end
 
   def move_from(start, board)
@@ -38,7 +45,7 @@ class GamePlay
     loop do
       puts "    --#{@turn}'s turn--\n"
       puts "\n"
-      
+
       gameboard.display_board
       board = gameboard.board
       set_positions

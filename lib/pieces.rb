@@ -4,16 +4,18 @@ require_relative 'moveset.rb'
 
 class Pawn
   attr_accessor :symbol, :legal_moves, :moved_once, :en_passant_allowed
-  attr_reader :team
+  attr_reader :team, :choice, :color
 
   def initialize(color, team)
     @symbol = "\u265F".colorize(color: color)
+    @color = color
     @team = team
     @legal_moves = []
     @moved_once = false
     @double_stepped = false
     @en_passant_allowed = false
     @passed_over = []
+    @choice = nil
   end
   # Checks if a different square, which is relative to the starting square,
   # Is nil (out of bounds) or an empty string, unless either are true it must hold a piece
@@ -79,6 +81,39 @@ class Pawn
       gb.dbl_step_pawn.piece = ' '
       gb.dbl_step_pawn.space = " #{gb.dbl_step_pawn.piece.symbol} ".colorize(background: gb.dbl_step_pawn.color)
       pawn.en_passant_allowed = false
+    end
+  end
+
+  def choose_promotion(choice, pos, board)
+    pawn = board[pos[0]][pos[1]].piece
+
+    case choice
+    when "queen"
+      board[pos[0]][pos[1]].piece = Queen.new(pawn.color, pawn.team)
+    when "rook"
+      board[pos[0]][pos[1]].piece = Rook.new(pawn.color, pawn.team)
+    when "knight"
+      board[pos[0]][pos[1]].piece = Knight.new(pawn.color, pawn.team)
+    when "bishop"
+      board[pos[0]][pos[1]].piece = Bishop.new(pawn.color, pawn.team)
+    end 
+  end
+  
+  def promote?(pawn, pos, board)
+    if pawn.team == 'white' && pos[0] == 8
+      loop do
+        puts "Promote to Queen, Rook, Knight or Bishop?"
+        @choice = gets.chomp
+        break if @choice.match?(/queen|rook|knight|bishop/)
+      end
+      choose_promotion(@choice, pos, board)
+    elsif pawn.team == 'black' && pos[0] == 1
+      loop do
+        puts "Promote to Queen, Rook, Knight or Bishop?"
+        @choice = gets.chomp
+        break if @choice.match?(/queen|rook|knight|bishop/)
+      end
+      choose_promotion(@choice) 
     end
   end
 

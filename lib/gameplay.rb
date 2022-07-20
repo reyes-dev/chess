@@ -82,6 +82,7 @@ class GamePlay
       redo unless legal?(chessman, @new_pos)
       move_from(@old_pos, board)
       move_to(chessman, @new_pos, board)
+      chessman.promote?(chessman, @new_pos, board) if chessman.instance_of?(Pawn)
       chessman.legal_moves.clear
       chessman.instance_of?(Pawn) ? chessman.moved_once = true : nil
       chessman.en_passantable(@old_pos, @new_pos, chessman, board, gameboard) if chessman.instance_of?(Pawn)

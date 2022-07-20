@@ -12,14 +12,16 @@ class GamePlay
     @next_turn = 'black'
   end
 
-  def set_positions
+  def set_old_position
     loop do
       puts "\n"
       print 'Enter starting position: '
       @old_pos = gets.chomp.split('').map(&:to_i)
       break if @old_pos.join.match?(/^[1-8][1-8]$/)
     end
+  end
 
+  def set_new_position
     loop do
       print 'Enter landing position: '
       @new_pos = gets.chomp.split('').map(&:to_i)
@@ -48,13 +50,15 @@ class GamePlay
 
       gameboard.display_board
       board = gameboard.board
-      set_positions
+      set_old_position
       chessman = board[@old_pos[0]][@old_pos[1]].piece
+      redo if chessman == " "
+      redo unless chessman.team == @turn
+      set_new_position
       chessman.generate_legals(@old_pos, board)
       legal = chessman.legal_moves.any?([@new_pos[0], @new_pos[1]])
       chessman.legal_moves.clear unless legal
       redo unless legal
-      redo unless chessman.team == @turn
       move_from(@old_pos, board)
       move_to(chessman, @new_pos, board)
       chessman.legal_moves.clear

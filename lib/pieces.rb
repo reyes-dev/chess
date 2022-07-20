@@ -23,15 +23,15 @@ class Pawn
   end
 
   def white_moves(start, board)
-    @legal_moves << [start[0] + 1, start[1]]
-    @legal_moves << [start[0] + 2, start[1]] if @moved_once == false
+    @legal_moves << [start[0] + 1, start[1]] unless is_enemy?(start, board, [1, 0])
+    @legal_moves << [start[0] + 2, start[1]] unless @moved_once == true && is_enemy?(start, board, [2, 0])
     @legal_moves << [start[0] + 1, start[1] - 1] if is_enemy?(start, board, [1, -1])
     @legal_moves << [start[0] + 1, start[1] + 1] if is_enemy?(start, board, [1, 1])
   end
 
   def black_moves(start, board)
-    @legal_moves << [start[0] - 1, start[1]]
-    @legal_moves << [start[0] - 2, start[1]] if @moved_once == false
+    @legal_moves << [start[0] - 1, start[1]] unless is_enemy?(start, board, [-1, 0])
+    @legal_moves << [start[0] - 2, start[1]] unless @moved_once == true && is_enemy?(start, board, [-2, 0])
     @legal_moves << [start[0] - 1, start[1] + 1] if is_enemy?(start, board, [-1, 1])
     @legal_moves << [start[0] - 1, start[1] - 1] if is_enemy?(start, board, [-1, -1])
   end

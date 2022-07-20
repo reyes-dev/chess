@@ -90,12 +90,16 @@ class Pawn
     case choice
     when "queen"
       board[pos[0]][pos[1]].piece = Queen.new(pawn.color, pawn.team)
+      #board.update_space(pos)
     when "rook"
       board[pos[0]][pos[1]].piece = Rook.new(pawn.color, pawn.team)
+      #board.update_space(pos)
     when "knight"
       board[pos[0]][pos[1]].piece = Knight.new(pawn.color, pawn.team)
+      #board.update_space(pos)
     when "bishop"
       board[pos[0]][pos[1]].piece = Bishop.new(pawn.color, pawn.team)
+      #board.update_space(pos)
     end 
   end
   
@@ -113,7 +117,7 @@ class Pawn
         @choice = gets.chomp
         break if @choice.match?(/queen|rook|knight|bishop/)
       end
-      choose_promotion(@choice) 
+      choose_promotion(@choice, pos, board) 
     end
   end
 

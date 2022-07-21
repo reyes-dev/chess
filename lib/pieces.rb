@@ -17,12 +17,18 @@ class Pawn
     @passed_over = []
     @choice = nil
   end
+
+  def in_bounds(start, board, diag)
+    if (start[0] + diag[0]).between?(1, 8) && (start[1] + diag[1]).between?(1, 8)
+      board[start[0] + diag[0]][start[1] + diag[1]]
+    end
+  end
   # Checks if a different square, which is relative to the starting square,
   # Is nil (out of bounds) or an empty string, unless either are true it must hold a piece
   # Compares pieces on both squares
   # Returns true when teams aren't the same
   def is_enemy?(start, board, diag)
-    square = board[start[0] + diag[0]][start[1] + diag[1]]
+    square = in_bounds(start, board, diag)
     unless square.nil? || square.piece == ' '
       enemy = square.piece.team
       ally = board[start[0]][start[1]].piece.team
@@ -84,40 +90,40 @@ class Pawn
     end
   end
 
-  def choose_promotion(choice, pos, board)
-    pawn = board[pos[0]][pos[1]].piece
+  def choose_promotion(choice, pos, board, color)
+    tile_color = board[pos[0]][pos[1]].color
 
     case choice
     when "queen"
-      board[pos[0]][pos[1]].piece = Queen.new(pawn.color, pawn.team)
-      #board.update_space(pos)
+      board[pos[0]][pos[1]].piece = Queen.new(color.to_sym, color)
+      board[pos[0]][pos[1]].space = " #{board[pos[0]][pos[1]].piece.symbol} ".colorize(background: tile_color)
     when "rook"
-      board[pos[0]][pos[1]].piece = Rook.new(pawn.color, pawn.team)
-      #board.update_space(pos)
+      board[pos[0]][pos[1]].piece = Rook.new(color.to_sym, color)
+      board[pos[0]][pos[1]].space = " #{board[pos[0]][pos[1]].piece.symbol} ".colorize(background: tile_color)
     when "knight"
-      board[pos[0]][pos[1]].piece = Knight.new(pawn.color, pawn.team)
-      #board.update_space(pos)
+      board[pos[0]][pos[1]].piece = Knight.new(color.to_sym, color)
+      board[pos[0]][pos[1]].space = " #{board[pos[0]][pos[1]].piece.symbol} ".colorize(background: tile_color)
     when "bishop"
-      board[pos[0]][pos[1]].piece = Bishop.new(pawn.color, pawn.team)
-      #board.update_space(pos)
-    end 
+      board[pos[0]][pos[1]].piece = Bishop.new(color.to_sym, color)
+      board[pos[0]][pos[1]].space = " #{board[pos[0]][pos[1]].piece.symbol} ".colorize(background: tile_color)
+    end
   end
-  
-  def promote?(pawn, pos, board)
-    if pawn.team == 'white' && pos[0] == 8
+
+  def promote?(pawn, pos, board, color)
+    if color == 'white' && pos[0] == 8
       loop do
         puts "Promote to Queen, Rook, Knight or Bishop?"
         @choice = gets.chomp
         break if @choice.match?(/queen|rook|knight|bishop/)
       end
-      choose_promotion(@choice, pos, board)
-    elsif pawn.team == 'black' && pos[0] == 1
+      choose_promotion(@choice, pos, board, color)
+    elsif color == 'black' && pos[0] == 1
       loop do
         puts "Promote to Queen, Rook, Knight or Bishop?"
         @choice = gets.chomp
         break if @choice.match?(/queen|rook|knight|bishop/)
       end
-      choose_promotion(@choice, pos, board) 
+      choose_promotion(@choice, pos, board, color) 
     end
   end
 

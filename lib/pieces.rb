@@ -162,19 +162,13 @@ class Pawn
     (color == 'white' && pos[0] == 8) || (color == 'black' && pos[0] == 1)
   end
 
-  def promotion(choice, pos, board, color)
+  def promotion(pos, board, color)
     choose_promotion
-    promote(choice, pos, board, color)
+    promote(@choice, pos, board, color)
   end
 
   def promote?(pawn, pos, board, color)
-    if color == 'white' && pos[0] == 8
-      choose_promotion
-      promote(@choice, pos, board, color)
-    elsif color == 'black' && pos[0] == 1
-      choose_promotion
-      promote(@choice, pos, board, color)
-    end
+    promotion(pos, board, color) if ready_to_promote?(color, pos)
   end
 
   # Generates legal moves the pawn from the current position

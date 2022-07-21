@@ -71,8 +71,9 @@ class Pawn
     white_legal_diag(board, init)
   end
 
-  def black_moves(start, board)
-
+  def black_moves(board, init)
+    black_legal_forwards(board, init)
+    white_legal_diag(board, init)
   end
 
   def adjacent

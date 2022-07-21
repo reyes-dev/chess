@@ -133,7 +133,7 @@ class Pawn
     pawn.space = " #{pawn.piece.symbol} ".colorize(background: pawn.color)
   end
 
-  def choose_promotion(choice, pos, board, color)
+  def promote(choice, pos, board, color)
     pawn = board[pos[0]][pos[1]]
 
     case choice
@@ -150,6 +150,14 @@ class Pawn
     update_space(pawn)
   end
 
+  def choose_promotion
+    loop do
+      puts "Promote to Queen, Rook, Knight or Bishop?"
+      @choice = gets.chomp
+      break if @choice.match?(/queen|rook|knight|bishop/)
+    end
+  end
+
   def promote?(pawn, pos, board, color)
     if color == 'white' && pos[0] == 8
       loop do
@@ -157,14 +165,14 @@ class Pawn
         @choice = gets.chomp
         break if @choice.match?(/queen|rook|knight|bishop/)
       end
-      choose_promotion(@choice, pos, board, color)
+      promote(@choice, pos, board, color)
     elsif color == 'black' && pos[0] == 1
       loop do
         puts "Promote to Queen, Rook, Knight or Bishop?"
         @choice = gets.chomp
         break if @choice.match?(/queen|rook|knight|bishop/)
       end
-      choose_promotion(@choice, pos, board, color) 
+      promote(@choice, pos, board, color) 
     end
   end
 

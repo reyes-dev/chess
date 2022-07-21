@@ -114,7 +114,14 @@ class Pawn
     tiles.each { |t| setup_passant(gb, board, pawn.team, init, fin, t) if passantable?(board, pawn.team, init, fin, t) }
   end
 
-  def en_passant(fin, board, gb, pawn)
+  def do_ep?(gb, pawn, fin)
+    pawn.en_passant_allowed && fin == gb.stepped_over
+  end
+
+  def perform_ep
+  end
+
+  def en_passant(gb, pawn, fin)
     if pawn.en_passant_allowed && fin == gb.stepped_over
       pawn.legals << gb.stepped_over
       gb.dbl_step_pawn.piece = ' '

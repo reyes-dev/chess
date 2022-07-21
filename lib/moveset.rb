@@ -5,13 +5,13 @@ module Cardinal
     board[x][y].piece.team if board[x][y].piece != ' '
   end
   # Four helper methods that add all the directions that
-  # The Rook piece is allowed to move to legal_moves
+  # The Rook piece is allowed to move to legals
   # Code is in place to break loop if square is filled by team
   # And to stop the loop after adding an enemy team-filled square
   def upwards_legals(start, board)
     (start[0] + 1).upto(8) do |x|
       break if board[start[0]][start[1]].piece.team == check_team(x, start[1], board)
-      @legal_moves << [x, start[1]]
+      @legals << [x, start[1]]
       break if board[x][start[1]].piece != ' '
     end
   end
@@ -19,7 +19,7 @@ module Cardinal
   def downwards_legals(start, board)
     (start[0] - 1).downto(1) do |x|
       break if board[start[0]][start[1]].piece.team == check_team(x, start[1], board)
-      @legal_moves << [x, start[1]]
+      @legals << [x, start[1]]
       break if board[x][start[1]].piece != ' '
     end
   end
@@ -27,7 +27,7 @@ module Cardinal
   def rightwards_legals(start, board)
     (start[1] + 1).upto(8) do |y|
       break if board[start[0]][start[1]].piece.team == check_team(start[0], y, board)
-      @legal_moves << [start[0], y]
+      @legals << [start[0], y]
       break if board[start[0]][y].piece != ' '
     end
   end
@@ -35,7 +35,7 @@ module Cardinal
   def leftwards_legals(start, board)
     (start[1] - 1).downto(1) do |y|
       break if board[start[0]][start[1]].piece.team == check_team(start[0], y, board)
-      @legal_moves << [start[0], y]
+      @legals << [start[0], y]
       break if board[start[0]][y].piece != ' '
     end
   end
@@ -84,7 +84,7 @@ module Diagonal
       end
     end
 
-    legal_diags.each { |e| @legal_moves << e }
+    legal_diags.each { |e| @legals << e }
   end
 
   def diagonal_legals(start, board)
@@ -101,15 +101,15 @@ module EightMoves
 
   def combine_moves(start)
     # Using chosen piece's coordinate, combine with each possible move
-    0.upto(7) { |n| @legal_moves << (0..1).map { |i| start[i] + possible_moves[n][i] } }
+    0.upto(7) { |n| @legals << (0..1).map { |i| start[i] + possible_moves[n][i] } }
   end
   # Gives all the moves Knight is allowed to make
   # From it's current position on the board
   def filter_moves(start, board)
     # Filter that result by keeping arrays where both elements are between 1 and 8
-    @legal_moves.select! { |sqr| sqr[0].between?(1, 8) && sqr[1].between?(1, 8) }
+    @legals.select! { |sqr| sqr[0].between?(1, 8) && sqr[1].between?(1, 8) }
     # Further filter out squares with friendly pieces
-    @legal_moves.select! { |sqr| check_team(start, sqr, board) }
+    @legals.select! { |sqr| check_team(start, sqr, board) }
   end
 
   def eight_legals(start, board)

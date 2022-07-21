@@ -56,7 +56,7 @@ class GamePlay
   end
 
   def legal?(chessman, landing)
-    chessman.legal_moves.any?([landing[0], landing[1]])
+    chessman.legals.any?([landing[0], landing[1]])
   end
 
   def convert_letter(char)
@@ -78,13 +78,13 @@ class GamePlay
       set_new_position
       chessman.generate_legals(@old_pos, board)
       chessman.en_passant(@new_pos, board, gameboard, chessman) if chessman.instance_of?(Pawn)
-      chessman.legal_moves.clear unless legal?(chessman, @new_pos)
+      chessman.legals.clear unless legal?(chessman, @new_pos)
       redo unless legal?(chessman, @new_pos)
       move_from(@old_pos, board)
       move_to(chessman, @new_pos, board)
       chessman.promote?(chessman, @new_pos, board, @turn) if chessman.instance_of?(Pawn)
-      chessman.legal_moves.clear
-      chessman.instance_of?(Pawn) ? chessman.moved_once = true : nil
+      chessman.legals.clear
+      chessman.instance_of?(Pawn) ? chessman.moved = true : nil
       chessman.en_passantable(@old_pos, @new_pos, chessman, board, gameboard) if chessman.instance_of?(Pawn)
       switch_turns
 

@@ -3,15 +3,15 @@ require_relative 'board.rb'
 require_relative 'moveset.rb'
 
 class Pawn
-  attr_accessor :symbol, :legal_moves, :moved_once, :en_passant_allowed
+  attr_accessor :symbol, :legals, :moved, :en_passant_allowed
   attr_reader :team, :choice, :color
 
   def initialize(color, team)
     @symbol = "\u265F".colorize(color: color)
     @color = color
     @team = team
-    @legal_moves = []
-    @moved_once = false
+    @legals = []
+    @moved = false
     @double_stepped = false
     @en_passant_allowed = false
     @passed_over = []
@@ -35,15 +35,17 @@ class Pawn
     enemy != ally
   end
 
-  def is_enemy?(board, init, adj)
+  def enemy?(board, init, adj)
     sqr = adj_square(board, init, adj)
     same_team?(sqr.piece.team, board[init[0]][init[1]].piece.team) unless no_piece?(sqr)
   end
 
-  def white_legal_double
+  def white_legal_double(init, board)
+    @legals << [init[0] + 2, init[1]] unless @moved == true || enemy?(board, init, [2, 0])
   end
 
   def black_legal_double
+    
   end
 
   def generate_white_moves
@@ -53,17 +55,16 @@ class Pawn
   end
 
   def white_moves(start, board)
-    @legal_moves << [start[0] + 1, start[1]] unless is_enemy?(board, start, [1, 0])
-    @legal_moves << [start[0] + 2, start[1]] unless @moved_once == true || is_enemy?(board, start, [2, 0])
-    @legal_moves << [start[0] + 1, start[1] - 1] if is_enemy?(board, start, [1, -1])
-    @legal_moves << [start[0] + 1, start[1] + 1] if is_enemy?(board, start, [1, 1])
+    @legals << [start[0] + 1, start[1]] unless enemy?(board, start, [1, 0])
+    @legals << [start[0] + 1, start[1] - 1] if enemy?(board, start, [1, -1])
+    @legals << [start[0] + 1, start[1] + 1] if enemy?(board, start, [1, 1])
   end
 
   def black_moves(start, board)
-    @legal_moves << [start[0] - 1, start[1]] unless is_enemy?(board, start, [-1, 0])
-    @legal_moves << [start[0] - 2, start[1]] unless @moved_once == true || is_enemy?(board, start, [-2, 0])
-    @legal_moves << [start[0] - 1, start[1] + 1] if is_enemy?(board, start, [-1, 1])
-    @legal_moves << [start[0] - 1, start[1] - 1] if is_enemy?(board, start, [-1, -1])
+    @legals << [start[0] - 1, start[1]] unless enemy?(board, start, [-1, 0])
+    @legals << [start[0] - 2, start[1]] unless @moved == true || enemy?(board, start, [-2, 0])
+    @legals << [start[0] - 1, start[1] + 1] if enemy?(board, start, [-1, 1])
+    @legals << [start[0] - 1, start[1] - 1] if enemy?(board, start, [-1, -1])
   end
 
   def adjacent
@@ -88,7 +89,7 @@ class Pawn
 
   def en_passantable(old, fin, pawn, board, gb)
     adjacent.each do |tile|
-      if is_enemy?(board, fin, tile) && double_step?(old, fin, pawn)
+      if enemy?(board, fin, tile) && double_step?(old, fin, pawn)
         board[fin[0] + tile[0]][fin[1] + tile[1]].piece.en_passant_allowed = true
         gb.dbl_step_pawn = board[fin[0]][fin[1]]
         gb.stepped_over = sq_stepped_over(old, fin, pawn)
@@ -98,7 +99,7 @@ class Pawn
 
   def en_passant(fin, board, gb, pawn)
     if pawn.en_passant_allowed && fin == gb.stepped_over
-      pawn.legal_moves << gb.stepped_over
+      pawn.legals << gb.stepped_over
       gb.dbl_step_pawn.piece = ' '
       gb.dbl_step_pawn.space = " #{gb.dbl_step_pawn.piece.symbol} ".colorize(background: gb.dbl_step_pawn.color)
       pawn.en_passant_allowed = false
@@ -151,13 +152,13 @@ end
 class Rook
   include Cardinal
 
-  attr_accessor :symbol, :legal_moves
+  attr_accessor :symbol, :legals
   attr_reader :team
 
   def initialize(color, team)
     @symbol = "\u265C".colorize(color: color)
     @team = team
-    @legal_moves = []
+    @legals = []
   end
 
   def generate_legals(start, board)
@@ -168,13 +169,13 @@ end
 class Knight
   include EightMoves
 
-  attr_accessor :symbol, :legal_moves
+  attr_accessor :symbol, :legals
   attr_reader :team
 
   def initialize(color, team)
     @symbol = "\u265E".colorize(color: color)
     @team = team
-    @legal_moves = []
+    @legals = []
   end
 
   def possible_moves
@@ -189,13 +190,13 @@ end
 class Bishop
   include Diagonal
 
-  attr_accessor :symbol, :legal_moves
+  attr_accessor :symbol, :legals
   attr_reader :team
 
   def initialize(color, team)
     @symbol = "\u265D".colorize(color: color)
     @team = team
-    @legal_moves = []
+    @legals = []
   end
 
   def generate_legals(start, board)
@@ -207,13 +208,13 @@ class Queen
   include Cardinal
   include Diagonal
 
-  attr_accessor :symbol, :legal_moves
+  attr_accessor :symbol, :legals
   attr_reader :team
 
   def initialize(color, team)
     @symbol = "\u265B".colorize(color: color)
     @team = team
-    @legal_moves = []
+    @legals = []
   end
 
   def generate_legals(start, board)
@@ -225,13 +226,13 @@ end
 class King
   include EightMoves
 
-  attr_accessor :symbol, :legal_moves
+  attr_accessor :symbol, :legals
   attr_reader :team
 
   def initialize(color, team)
     @symbol = "\u265A".colorize(color: color)
     @team = team
-    @legal_moves = []
+    @legals = []
   end
 
   def possible_moves

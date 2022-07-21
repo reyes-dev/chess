@@ -44,8 +44,8 @@ class Pawn
     @legals << [init[0] + 2, init[1]] unless @moved == true || enemy?(board, init, [2, 0])
   end
 
-  def black_legal_double
-    
+  def black_legal_double(init, board)
+    @legals << [init[0] - 2, init[1]] unless @moved == true || enemy?(board, init, [-2,0])
   end
 
   def generate_white_moves
@@ -62,7 +62,6 @@ class Pawn
 
   def black_moves(start, board)
     @legals << [start[0] - 1, start[1]] unless enemy?(board, start, [-1, 0])
-    @legals << [start[0] - 2, start[1]] unless @moved == true || enemy?(board, start, [-2, 0])
     @legals << [start[0] - 1, start[1] + 1] if enemy?(board, start, [-1, 1])
     @legals << [start[0] - 1, start[1] - 1] if enemy?(board, start, [-1, -1])
   end

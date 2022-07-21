@@ -48,7 +48,12 @@ class Pawn
     @legals << [init[0] - 2, init[1]] unless @moved == true || enemy?(board, init, [-2,0])
   end
 
-  def generate_white_moves
+  def w_m
+    [[1, -1], [1, 1]]
+  end
+
+  def generate_white_moves(board, init)
+    w_m.each { |m| @legals << [init[0] + m[0], init[1] + m[1]] if enemy?(board, init, m) }
   end
 
   def generate_black_moves

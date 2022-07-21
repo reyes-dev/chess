@@ -117,3 +117,41 @@ module EightMoves
     filter_moves(start, board)
   end
 end
+
+module PawnMovement
+  def white_legal_forwards(board, init)
+    @legals << [init[0] + 1, init[1]] unless enemy?(board, init, [1, 0])
+    @legals << [init[0] + 2, init[1]] unless @moved == true || enemy?(board, init, [2, 0])
+  end
+
+  def black_legal_forwards(board, init)
+    @legals << [init[0] - 1, init[1]] unless enemy?(board, init, [-1, 0])
+    @legals << [init[0] - 2, init[1]] unless @moved == true || enemy?(board, init, [-2,0])
+  end
+
+  def w_m
+    [[1, -1], [1, 1]]
+  end
+
+  def white_legal_diag(board, init)
+    w_m.each { |m| @legals << [init[0] + m[0], init[1] + m[1]] if enemy?(board, init, m) }
+  end
+
+  def b_m
+    [[-1, 1], [-1, -1]]
+  end
+
+  def black_legal_diag(board, init)
+    b_m.each { |m| @legals << [init[0] + m[0], init[1] + m[1]] if enemy?(board, init, m) }
+  end
+
+  def white_moves(board, init)
+    white_legal_forwards(board, init)
+    white_legal_diag(board, init)
+  end
+
+  def black_moves(board, init)
+    black_legal_forwards(board, init)
+    black_legal_diag(board, init)
+  end
+end

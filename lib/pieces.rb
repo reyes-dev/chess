@@ -73,7 +73,7 @@ class Pawn
 
   def black_moves(board, init)
     black_legal_forwards(board, init)
-    white_legal_diag(board, init)
+    black_legal_diag(board, init)
   end
 
   def tiles

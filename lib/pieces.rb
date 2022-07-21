@@ -40,14 +40,14 @@ class Pawn
     same_team?(sqr.piece.team, board[init[0]][init[1]].piece.team) unless no_piece?(sqr)
   end
 
-  def white_legal_forwards(init, board)
+  def white_legal_forwards(board, init)
     @legals << [init[0] + 1, init[1]] unless enemy?(board, init, [1, 0])
     @legals << [init[0] + 2, init[1]] unless @moved == true || enemy?(board, init, [2, 0])
   end
 
-  def black_legal_forwards(init, board)
+  def black_legal_forwards(board, init)
+    @legals << [init[0] - 1, init[1]] unless enemy?(board, init, [-1, 0])
     @legals << [init[0] - 2, init[1]] unless @moved == true || enemy?(board, init, [-2,0])
-    @legals << [start[0] - 1, start[1]] unless enemy?(board, start, [-1, 0])
   end
 
   def w_m
@@ -67,9 +67,12 @@ class Pawn
   end
 
   def white_moves(board, init)
+    white_legal_forwards(board, init)
+    white_legal_diag(board, init)
   end
 
   def black_moves(start, board)
+
   end
 
   def adjacent
@@ -150,7 +153,7 @@ class Pawn
 
   # Generates legal moves the pawn from the current position
   def generate_legals(start, board)
-    @team == 'white' ? white_moves(start, board) : black_moves(start, board)
+    @team == 'white' ? white_moves(board, start) : black_moves(board, start)
   end
 end
 

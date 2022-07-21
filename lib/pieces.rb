@@ -106,12 +106,12 @@ class Pawn
     store_step(gb, pawn, init)
   end
 
+  def passantable?(board, pawn, init, fin, adj)
+    enemy?(board, fin, adj) && double_step?(pawn, init, fin)
+  end
+
   def en_passantable(gb, board, pawn, init, fin)
-    adj_tiles.each do |tile|
-      if enemy?(board, fin, tile) && double_step?(pawn.team, init, fin)
-        setup_passant(gb, board, pawn.team, init, fin, tile)
-      end
-    end
+    adj_tiles.each { |tile| setup_passant(gb, board, pawn.team, init, fin, tile) if passantable?(board, pawn.team, init, fin, tile) }
   end
 
   def en_passant(fin, board, gb, pawn)

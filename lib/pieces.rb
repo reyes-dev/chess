@@ -158,21 +158,17 @@ class Pawn
     end
   end
 
+  def ready_to_promote?(color, pos)
+    (color == 'white' && pos[0] == 8) || (color == 'black' && pos[0] == 1)
+  end
+
   def promote?(pawn, pos, board, color)
     if color == 'white' && pos[0] == 8
-      loop do
-        puts "Promote to Queen, Rook, Knight or Bishop?"
-        @choice = gets.chomp
-        break if @choice.match?(/queen|rook|knight|bishop/)
-      end
+      choose_promotion
       promote(@choice, pos, board, color)
     elsif color == 'black' && pos[0] == 1
-      loop do
-        puts "Promote to Queen, Rook, Knight or Bishop?"
-        @choice = gets.chomp
-        break if @choice.match?(/queen|rook|knight|bishop/)
-      end
-      promote(@choice, pos, board, color) 
+      choose_promotion
+      promote(@choice, pos, board, color)
     end
   end
 

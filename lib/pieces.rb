@@ -52,7 +52,7 @@ class Pawn
     [[1, -1], [1, 1]]
   end
 
-  def generate_white_moves(board, init)
+  def gen_diag_white(board, init)
     w_m.each { |m| @legals << [init[0] + m[0], init[1] + m[1]] if enemy?(board, init, m) }
   end
 
@@ -60,7 +60,7 @@ class Pawn
     [[-1, 1], [-1, -1]]
   end
 
-  def generate_black_moves
+  def gen_diag_black(board, init)
     b_m.each { |m| @legals << [init[0] + m[0], init[1] + m[1]] if enemy?(board, init, m) }
   end
 

@@ -153,8 +153,8 @@ class Pawn
   end
 
   # Generates legal moves the pawn from the current position
-  def generate_legals(start, board)
-    @team == 'white' ? white_moves(board, start) : black_moves(board, start)
+  def generate_legals(board, init)
+    @team == 'white' ? white_moves(board, init) : black_moves(board, init)
   end
 end
 

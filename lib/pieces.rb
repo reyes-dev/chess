@@ -88,12 +88,16 @@ class Pawn
     pawn == 'white' ? [init[0] + 1, init[1]] : [init[0] - 1, init[1]]
   end
 
-  def en_passantable(old, fin, pawn, board, gb)
+  def allow_passant(board, fin, adj)
+    board[fin[0] + adj[0]][fin[1] + adj[1]].piece.en_passant_allowed = true
+  end
+
+  def en_passantable(gb, board, pawn, init, fin)
     adj_tiles.each do |tile|
-      if enemy?(board, fin, tile) && double_step?(pawn.team, old, fin)
-        board[fin[0] + tile[0]][fin[1] + tile[1]].piece.en_passant_allowed = true
+      if enemy?(board, fin, tile) && double_step?(pawn.team, init, fin)
+        allow_passant(board, fin, tile)
         gb.dbl_step_pawn = board[fin[0]][fin[1]]
-        gb.stepped_over = sq_stepped_over(pawn.team, old)
+        gb.stepped_over = sq_stepped_over(pawn.team, init)
       end
     end
   end
@@ -145,7 +149,7 @@ class Pawn
   end
 
   # Generates legal moves the pawn from the current position
-  def generate_legals(board, init)
+  def generate_legals(init, board)
     @team == 'white' ? white_moves(board, init) : black_moves(board, init)
   end
 end

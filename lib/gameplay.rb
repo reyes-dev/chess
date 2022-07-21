@@ -85,7 +85,7 @@ class GamePlay
       chessman.promote?(chessman, @new_pos, board, @turn) if chessman.instance_of?(Pawn)
       chessman.legals.clear
       chessman.instance_of?(Pawn) ? chessman.moved = true : nil
-      chessman.en_passantable(@old_pos, @new_pos, chessman, board, gameboard) if chessman.instance_of?(Pawn)
+      chessman.en_passantable(gameboard, board, chessman, @old_pos, @new_pos) if chessman.instance_of?(Pawn)
       switch_turns
 
       puts "\n"

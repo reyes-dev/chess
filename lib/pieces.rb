@@ -162,6 +162,11 @@ class Pawn
     (color == 'white' && pos[0] == 8) || (color == 'black' && pos[0] == 1)
   end
 
+  def promotion(choice, pos, board, color)
+    choose_promotion
+    promote(choice, pos, board, color)
+  end
+
   def promote?(pawn, pos, board, color)
     if color == 'white' && pos[0] == 8
       choose_promotion

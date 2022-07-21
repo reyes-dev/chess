@@ -76,32 +76,24 @@ class Pawn
     white_legal_diag(board, init)
   end
 
-  def adjacent
-    [[0, 1], [0, -1]]
+  def adj_tiles
+    [[0, -1], [0, 1]]
   end
 
-  def double_step?(start, finish, pawn)
-    if pawn.team == 'white'
-      [start[0] + 2, start[1]] == [finish[0], finish[1]]
-    elsif pawn.team == 'black'
-      [start[0] - 2, start[1]] == [finish[0], finish[1]]
-    end
+  def double_step?(pawn, init, fin)
+    pawn == 'white' ? [init[0] + 2, init[1]] == [fin[0], fin[1]] : [init[0] - 2, init[1]] == [fin[0], fin[1]]
   end
 
   def sq_stepped_over(start, finish, pawn)
-    if pawn.team == 'white'
-      [start[0] + 1, start[1]]
-    elsif pawn.team == 'black'
-      [start[0] - 1, start[1]]
-    end
+    pawn == 'white' ? [start[0] + 1, start[1]] : [start[0] - 1, start[1]]
   end
 
   def en_passantable(old, fin, pawn, board, gb)
-    adjacent.each do |tile|
-      if enemy?(board, fin, tile) && double_step?(old, fin, pawn)
+    adj_tiles.each do |tile|
+      if enemy?(board, fin, tile) && double_step?(pawn.team, old, fin)
         board[fin[0] + tile[0]][fin[1] + tile[1]].piece.en_passant_allowed = true
         gb.dbl_step_pawn = board[fin[0]][fin[1]]
-        gb.stepped_over = sq_stepped_over(old, fin, pawn)
+        gb.stepped_over = sq_stepped_over(old, fin, pawn.team)
       end
     end
   end

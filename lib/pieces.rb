@@ -84,8 +84,8 @@ class Pawn
     pawn == 'white' ? [init[0] + 2, init[1]] == [fin[0], fin[1]] : [init[0] - 2, init[1]] == [fin[0], fin[1]]
   end
 
-  def sq_stepped_over(start, finish, pawn)
-    pawn == 'white' ? [start[0] + 1, start[1]] : [start[0] - 1, start[1]]
+  def sq_stepped_over(pawn, init)
+    pawn == 'white' ? [init[0] + 1, init[1]] : [init[0] - 1, init[1]]
   end
 
   def en_passantable(old, fin, pawn, board, gb)
@@ -93,7 +93,7 @@ class Pawn
       if enemy?(board, fin, tile) && double_step?(pawn.team, old, fin)
         board[fin[0] + tile[0]][fin[1] + tile[1]].piece.en_passant_allowed = true
         gb.dbl_step_pawn = board[fin[0]][fin[1]]
-        gb.stepped_over = sq_stepped_over(old, fin, pawn.team)
+        gb.stepped_over = sq_stepped_over(pawn.team, old)
       end
     end
   end

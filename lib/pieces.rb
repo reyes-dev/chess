@@ -3,11 +3,13 @@ require_relative 'board.rb'
 require_relative 'moveset.rb'
 require_relative 'en_passant.rb'
 require_relative 'pawn_promotion.rb'
+require_relative 'neighbor_tile.rb'
 
 class Pawn
   include PawnMovement
   include EnPassant
   include Promotion
+  include NeighborTile
 
   attr_accessor :symbol, :legals, :moved, :en_passant_allowed
   attr_reader :team, :choice, :color
@@ -23,29 +25,6 @@ class Pawn
     @passed_over = []
     @choice = nil
   end
-  # Checks if the combined arrays actually represent 
-  # an existent coordinate on an 8x8 board
-  def in_bounds?(init, adj)
-    ((init[0] + adj[0]).between?(1, 8) && (init[1] + adj[1]).between?(1, 8))
-  end
-  # Returns the square object that's inside the @board
-  def adj_square(board, init, adj)
-    board[init[0] + adj[0]][init[1] + adj[1]] if in_bounds?(init, adj)
-  end
-
-  def no_piece?(square)
-    square.nil? || square.piece == ' '
-  end
-
-  def same_team?(enemy, ally)
-    enemy != ally
-  end
-
-  def enemy?(board, init, adj)
-    sqr = adj_square(board, init, adj)
-    same_team?(sqr.piece.team, board[init[0]][init[1]].piece.team) unless no_piece?(sqr)
-  end
-
   # Generates legal moves the pawn from the current position
   def generate_legals(init, board)
     @team == 'white' ? white_moves(board, init) : black_moves(board, init)

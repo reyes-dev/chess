@@ -96,12 +96,16 @@ class Pawn
     gb.dbl_step_pawn = board[fin[0]][fin[1]]
   end
 
+  def store_step(gb, pawn_team, init)
+    gb.stepped_over = sq_stepped_over(pawn_team, init)
+  end
+
   def en_passantable(gb, board, pawn, init, fin)
     adj_tiles.each do |tile|
       if enemy?(board, fin, tile) && double_step?(pawn.team, init, fin)
         allow_passant(board, fin, tile)
-        gb.dbl_step_pawn = board[fin[0]][fin[1]]
-        gb.stepped_over = sq_stepped_over(pawn.team, init)
+        store_dbl(gb, board, fin)
+        store_step(gb, pawn.team, init)
       end
     end
   end

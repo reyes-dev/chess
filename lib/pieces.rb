@@ -56,7 +56,12 @@ class Pawn
     w_m.each { |m| @legals << [init[0] + m[0], init[1] + m[1]] if enemy?(board, init, m) }
   end
 
+  def b_m
+    [[-1, 1], [-1, -1]]
+  end
+
   def generate_black_moves
+    b_m.each { |m| @legals << [init[0] + m[0], init[1] + m[1]] if enemy?(board, init, m) }
   end
 
   def white_moves(start, board)

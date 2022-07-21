@@ -133,7 +133,7 @@ class Pawn
     pawn.space = " #{pawn.piece.symbol} ".colorize(background: pawn.color)
   end
 
-  def promote(choice, pos, board, color)
+  def promote(choice, color)
     case choice
     when "queen"
       pawn.piece = Queen.new(color.to_sym, color)
@@ -158,15 +158,15 @@ class Pawn
     (color == 'white' && pos[0] == 8) || (color == 'black' && pos[0] == 1)
   end
 
-  def promotion(pos, board, color)
+  def promotion(board, pos, color)
     pawn = board[pos[0]][pos[1]]
     choose_promotion
-    promote(@choice, pos, board, color)
+    promote(@choice, color)
     update_space(pawn)
   end
 
-  def promote?(pawn, pos, board, color)
-    promotion(pos, board, color) if ready_to_promote?(color, pos)
+  def promote?(board, pos, color)
+    promotion(board, pos, color) if ready_to_promote?(color, pos)
   end
 
   # Generates legal moves the pawn from the current position

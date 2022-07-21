@@ -17,26 +17,27 @@ class Pawn
     @passed_over = []
     @choice = nil
   end
-  # Returns the Square if the combined arrays equal a real coordinate
-  def in_bounds?(start, adj)
-    ((start[0] + adj[0]).between?(1, 8) && (start[1] + adj[1]).between?(1, 8))
+  # Checks if the combined arrays actually represent 
+  # an existent coordinate on an 8x8 board
+  def in_bounds?(init, adj)
+    ((init[0] + adj[0]).between?(1, 8) && (init[1] + adj[1]).between?(1, 8))
+  end
+  # Returns the square object that's inside the @board
+  def adj_square(board, init, adj)
+    board[init[0] + adj[0]][init[1] + adj[1]] if in_bounds?(init, adj)
   end
 
-  def adj_square(board, start, adj)
-    board[start[0] + adj[0]][start[1] + adj[1]] if in_bounds?(start, adj)
+  def no_piece?(square)
+    square.nil? || square.piece == ' '
   end
-  # Checks if a different square, which is relative to the starting square,
-  # Is nil (out of bounds) or an empty string, unless either are true it must hold a piece
-  # Compares pieces on both squares
-  # Returns true when teams aren't the same
-  def is_enemy?(start, board, adj)
-    square = adj_square(board, start, adj)
-    unless square.nil? || square.piece == ' '
-      enemy = square.piece.team
-      ally = board[start[0]][start[1]].piece.team
 
-      enemy != ally
-    end
+  def same_team?(enemy, ally)
+    enemy != ally
+  end
+
+  def is_enemy?(board, init, adj)
+    sqr = adj_square(board, init, adj)
+    same_team?(sqr.piece.team, board[init[0]][init[1]].piece.team) unless no_piece?(sqr)
   end
 
   def white_legal_double
@@ -52,17 +53,17 @@ class Pawn
   end
 
   def white_moves(start, board)
-    @legal_moves << [start[0] + 1, start[1]] unless is_enemy?(start, board, [1, 0])
-    @legal_moves << [start[0] + 2, start[1]] unless @moved_once == true || is_enemy?(start, board, [2, 0])
-    @legal_moves << [start[0] + 1, start[1] - 1] if is_enemy?(start, board, [1, -1])
-    @legal_moves << [start[0] + 1, start[1] + 1] if is_enemy?(start, board, [1, 1])
+    @legal_moves << [start[0] + 1, start[1]] unless is_enemy?(board, start, [1, 0])
+    @legal_moves << [start[0] + 2, start[1]] unless @moved_once == true || is_enemy?(board, start, [2, 0])
+    @legal_moves << [start[0] + 1, start[1] - 1] if is_enemy?(board, start, [1, -1])
+    @legal_moves << [start[0] + 1, start[1] + 1] if is_enemy?(board, start, [1, 1])
   end
 
   def black_moves(start, board)
-    @legal_moves << [start[0] - 1, start[1]] unless is_enemy?(start, board, [-1, 0])
-    @legal_moves << [start[0] - 2, start[1]] unless @moved_once == true || is_enemy?(start, board, [-2, 0])
-    @legal_moves << [start[0] - 1, start[1] + 1] if is_enemy?(start, board, [-1, 1])
-    @legal_moves << [start[0] - 1, start[1] - 1] if is_enemy?(start, board, [-1, -1])
+    @legal_moves << [start[0] - 1, start[1]] unless is_enemy?(board, start, [-1, 0])
+    @legal_moves << [start[0] - 2, start[1]] unless @moved_once == true || is_enemy?(board, start, [-2, 0])
+    @legal_moves << [start[0] - 1, start[1] + 1] if is_enemy?(board, start, [-1, 1])
+    @legal_moves << [start[0] - 1, start[1] - 1] if is_enemy?(board, start, [-1, -1])
   end
 
   def adjacent
@@ -87,7 +88,7 @@ class Pawn
 
   def en_passantable(old, fin, pawn, board, gb)
     adjacent.each do |tile|
-      if is_enemy?(fin, board, tile) && double_step?(old, fin, pawn)
+      if is_enemy?(board, fin, tile) && double_step?(old, fin, pawn)
         board[fin[0] + tile[0]][fin[1] + tile[1]].piece.en_passant_allowed = true
         gb.dbl_step_pawn = board[fin[0]][fin[1]]
         gb.stepped_over = sq_stepped_over(old, fin, pawn)
@@ -141,7 +142,7 @@ class Pawn
     end
   end
 
-  # Generates legal moves for the pawn from the current position
+  # Generates legal moves the pawn from the current position
   def generate_legals(start, board)
     @team == 'white' ? white_moves(start, board) : black_moves(start, board)
   end

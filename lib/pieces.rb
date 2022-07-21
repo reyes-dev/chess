@@ -134,8 +134,6 @@ class Pawn
   end
 
   def promote(choice, pos, board, color)
-    pawn = board[pos[0]][pos[1]]
-
     case choice
     when "queen"
       pawn.piece = Queen.new(color.to_sym, color)
@@ -146,8 +144,6 @@ class Pawn
     when "bishop"
       pawn.piece = Bishop.new(color.to_sym, color)
     end
-
-    update_space(pawn)
   end
 
   def choose_promotion
@@ -163,8 +159,10 @@ class Pawn
   end
 
   def promotion(pos, board, color)
+    pawn = board[pos[0]][pos[1]]
     choose_promotion
     promote(@choice, pos, board, color)
+    update_space(pawn)
   end
 
   def promote?(pawn, pos, board, color)

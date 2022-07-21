@@ -76,7 +76,7 @@ class Pawn
     white_legal_diag(board, init)
   end
 
-  def adj_tiles
+  def tiles
     [[0, -1], [0, 1]]
   end
 
@@ -111,7 +111,7 @@ class Pawn
   end
 
   def en_passantable(gb, board, pawn, init, fin)
-    adj_tiles.each { |tile| setup_passant(gb, board, pawn.team, init, fin, tile) if passantable?(board, pawn.team, init, fin, tile) }
+    tiles.each { |t| setup_passant(gb, board, pawn.team, init, fin, t) if passantable?(board, pawn.team, init, fin, t) }
   end
 
   def en_passant(fin, board, gb, pawn)

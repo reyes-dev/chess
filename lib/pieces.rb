@@ -114,20 +114,19 @@ class Pawn
     tiles.each { |t| setup_passant(gb, board, pawn.team, init, fin, t) if passantable?(board, pawn.team, init, fin, t) }
   end
 
-  def do_ep?(gb, pawn, fin)
-    pawn.en_passant_allowed && fin == gb.stepped_over
+  def do_ep?(gb, fin)
+    @en_passant_allowed && fin == gb.stepped_over
   end
 
-  def perform_ep
+  def perform_ep(gb)
+    @legals << gb.stepped_over
+    gb.dbl_step_pawn.piece = ' '
+    gb.dbl_step_pawn.space = " #{gb.dbl_step_pawn.piece.symbol} ".colorize(background: gb.dbl_step_pawn.color)
+    @en_passant_allowed = false
   end
 
-  def en_passant(gb, pawn, fin)
-    if pawn.en_passant_allowed && fin == gb.stepped_over
-      pawn.legals << gb.stepped_over
-      gb.dbl_step_pawn.piece = ' '
-      gb.dbl_step_pawn.space = " #{gb.dbl_step_pawn.piece.symbol} ".colorize(background: gb.dbl_step_pawn.color)
-      pawn.en_passant_allowed = false
-    end
+  def en_passant(gb, fin)
+    perform_ep(gb) if do_ep?(gb, fin)
   end
 
   def choose_promotion(choice, pos, board, color)

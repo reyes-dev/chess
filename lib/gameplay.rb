@@ -77,7 +77,7 @@ class GamePlay
       redo unless chessman.team == @turn
       set_new_position
       chessman.generate_legals(@old_pos, board)
-      chessman.en_passant(gameboard, chessman, @new_pos) if chessman.instance_of?(Pawn)
+      chessman.en_passant(gameboard, @new_pos) if chessman.instance_of?(Pawn)
       chessman.legals.clear unless legal?(chessman, @new_pos)
       redo unless legal?(chessman, @new_pos)
       move_from(@old_pos, board)

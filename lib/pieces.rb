@@ -100,12 +100,16 @@ class Pawn
     gb.stepped_over = sq_stepped_over(pawn_team, init)
   end
 
+  def setup_passant(gb, board, pawn, init, fin, adj)
+    allow_passant(board, fin, adj)
+    store_dbl(gb, board, fin)
+    store_step(gb, pawn, init)
+  end
+
   def en_passantable(gb, board, pawn, init, fin)
     adj_tiles.each do |tile|
       if enemy?(board, fin, tile) && double_step?(pawn.team, init, fin)
-        allow_passant(board, fin, tile)
-        store_dbl(gb, board, fin)
-        store_step(gb, pawn.team, init)
+        setup_passant(gb, board, pawn.team, init, fin, tile)
       end
     end
   end

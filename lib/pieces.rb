@@ -17,24 +17,38 @@ class Pawn
     @passed_over = []
     @choice = nil
   end
+  # Returns the Square if the combined arrays equal a real coordinate
+  def in_bounds?(start, adj)
+    ((start[0] + adj[0]).between?(1, 8) && (start[1] + adj[1]).between?(1, 8))
+  end
 
-  def in_bounds(start, board, diag)
-    if (start[0] + diag[0]).between?(1, 8) && (start[1] + diag[1]).between?(1, 8)
-      board[start[0] + diag[0]][start[1] + diag[1]]
-    end
+  def adj_square(board, start, adj)
+    board[start[0] + adj[0]][start[1] + adj[1]] if in_bounds?(start, adj)
   end
   # Checks if a different square, which is relative to the starting square,
   # Is nil (out of bounds) or an empty string, unless either are true it must hold a piece
   # Compares pieces on both squares
   # Returns true when teams aren't the same
-  def is_enemy?(start, board, diag)
-    square = in_bounds(start, board, diag)
+  def is_enemy?(start, board, adj)
+    square = adj_square(board, start, adj)
     unless square.nil? || square.piece == ' '
       enemy = square.piece.team
       ally = board[start[0]][start[1]].piece.team
 
       enemy != ally
     end
+  end
+
+  def white_legal_double
+  end
+
+  def black_legal_double
+  end
+
+  def generate_white_moves
+  end
+
+  def generate_black_moves
   end
 
   def white_moves(start, board)

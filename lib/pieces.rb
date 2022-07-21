@@ -129,23 +129,25 @@ class Pawn
     perform_ep(gb) if do_ep?(gb, fin)
   end
 
+  def update_space(pawn)
+    pawn.space = " #{pawn.piece.symbol} ".colorize(background: pawn.color)
+  end
+
   def choose_promotion(choice, pos, board, color)
-    tile_color = board[pos[0]][pos[1]].color
+    pawn = board[pos[0]][pos[1]]
 
     case choice
     when "queen"
-      board[pos[0]][pos[1]].piece = Queen.new(color.to_sym, color)
-      board[pos[0]][pos[1]].space = " #{board[pos[0]][pos[1]].piece.symbol} ".colorize(background: tile_color)
+      pawn.piece = Queen.new(color.to_sym, color)
     when "rook"
-      board[pos[0]][pos[1]].piece = Rook.new(color.to_sym, color)
-      board[pos[0]][pos[1]].space = " #{board[pos[0]][pos[1]].piece.symbol} ".colorize(background: tile_color)
+      pawn.piece = Rook.new(color.to_sym, color)
     when "knight"
-      board[pos[0]][pos[1]].piece = Knight.new(color.to_sym, color)
-      board[pos[0]][pos[1]].space = " #{board[pos[0]][pos[1]].piece.symbol} ".colorize(background: tile_color)
+      pawn.piece = Knight.new(color.to_sym, color)
     when "bishop"
-      board[pos[0]][pos[1]].piece = Bishop.new(color.to_sym, color)
-      board[pos[0]][pos[1]].space = " #{board[pos[0]][pos[1]].piece.symbol} ".colorize(background: tile_color)
+      pawn.piece = Bishop.new(color.to_sym, color)
     end
+
+    update_space(pawn)
   end
 
   def promote?(pawn, pos, board, color)

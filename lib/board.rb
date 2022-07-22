@@ -2,12 +2,13 @@ require_relative 'pieces'
 require_relative 'team'
 
 class String
+  # Lets a Square object set the center of @space to piece.symbol
   def symbol
     ' '
   end
-
+  # For when square checking methods check the team of
+  # the piece on a square but the square is empty
   def team
-
   end
 end
 
@@ -99,8 +100,8 @@ class Board < Team
              7 => Square.new(@white_knight2, :light_red),
              8 => Square.new(@white_rook2, :light_white) }
     }
-    @dbl_step_pawn = nil
-    @stepped_over = nil
+    @dbl_step_pawn = nil # Stores square of pawn that double stepped
+    @stepped_over = nil # Stores square that pawn stepped over
   end
 
   def display_board

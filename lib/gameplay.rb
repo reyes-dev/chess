@@ -22,6 +22,11 @@ class GamePlay
     }
   end
 
+  def convert_letter(char)
+    char[0] = @letters[char[0]]
+    char.map!(&:to_i).reverse!
+  end
+
   def set_old_position
     loop do
       puts "\n"
@@ -48,7 +53,7 @@ class GamePlay
 
   def move_to(chessman, finish, board)
     board[finish[0]][finish[1]].piece = chessman
-    board[finish[0]][finish[1]].space = " #{board[finish[0]][finish[1]].piece.symbol} ".colorize(background: board[finish[0]][finish[1]].color)
+    board[finish[0]][finish[1]].space = " #{chessman.symbol} ".colorize(background: board[finish[0]][finish[1]].color)
   end
 
   def switch_turns
@@ -59,27 +64,30 @@ class GamePlay
     chessman.legals.any?([landing[0], landing[1]])
   end
 
-  def convert_letter(char)
-    char[0] = @letters[char[0]]
-    char.map!(&:to_i).reverse!
-  end
-
   def play(gameboard)
     loop do
       puts "       --#{@turn}'s turn--\n"
       puts "\n"
-
+      # Phase 1 -> displays board and let's player select a square
+      # That isn't empty and holds a piece that matches their team
       gameboard.display_board
       board = gameboard.board
       set_old_position
       chessman = board[@old_pos[0]][@old_pos[1]].piece
       redo if chessman == " "
       redo unless chessman.team == @turn
+      # Phase 2 -> player selects a new square to move the piece
+      # a set of allowed moves is generated for selected piece
+      # allows players pawn to perform an en passant
+      # if conditions were met in the prior turn
       set_new_position
       chessman.generate_legals(@old_pos, board)
       chessman.en_passant(gameboard, @new_pos) if chessman.instance_of?(Pawn)
       chessman.legals.clear unless legal?(chessman, @new_pos)
       redo unless legal?(chessman, @new_pos)
+      # Phase 3 -> Moves selected piece to new position
+      # Promotes if eligible Pawn, edits @moved variable and 
+      # Makes pawn eligible to be attacked en passant if conditions are met
       move_from(@old_pos, board)
       move_to(chessman, @new_pos, board)
       chessman.promote?(board, @new_pos, @turn) if chessman.instance_of?(Pawn)

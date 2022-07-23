@@ -104,23 +104,19 @@ module Diagonal
 end
 
 module EightMoves
-  # Compares chosen piece to piece on a landing spot
-  # Returning true when both squares aren't the same team
-  def check_team(start, fin, board)
+  def different_teams?(start, fin, board)
     board[fin[0]][fin[1]].piece.team != board[start[0]][start[1]].piece.team
   end
-
+  # Using Knight's coordinate, combine with each possible move
   def combine_moves(start)
-    # Using chosen piece's coordinate, combine with each possible move
     0.upto(7) { |n| @legals << (0..1).map { |i| start[i] + possible_moves[n][i] } }
   end
-  # Gives all the moves Knight is allowed to make
-  # From it's current position on the board
+  # Filters illegal moves out of @legals
   def filter_moves(start, board)
-    # Filter that result by keeping arrays where both elements are between 1 and 8
+    # Filters by keeping arrays where both elements are between 1 and 8
     @legals.select! { |sqr| sqr[0].between?(1, 8) && sqr[1].between?(1, 8) }
     # Further filter out squares with friendly pieces
-    @legals.select! { |sqr| check_team(start, sqr, board) }
+    @legals.select! { |sqr| different_teams?(start, sqr, board) }
   end
 
   def eight_legals(start, board)

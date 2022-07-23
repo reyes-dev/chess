@@ -14,6 +14,8 @@ class Pawn
   attr_accessor :symbol, :legals, :moved, :en_passant_allowed
   attr_reader :team, :choice, :color
 
+  @@instances = []
+
   def initialize(color, team)
     @symbol = "\u265F".colorize(color: color)
     @color = color
@@ -24,6 +26,7 @@ class Pawn
     @en_passant_allowed = false
     @passed_over = []
     @choice = nil
+    @instances << self
   end
   # Generates legal moves the pawn from the current position
   def generate_legals(init, board)

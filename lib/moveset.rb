@@ -62,28 +62,35 @@ module Diagonal
       board[init[0] + dir[0]][init[1] + dir[1]].piece.team == board[chosen[0]][chosen[1]].piece.team
     end
   end
-
+  # Called after pushing a square
   def pushed_enemy?(tile, board)
     board[tile[0]][tile[1]].piece != ' '
   end
-
+  # x, y coordinates on board can only be between 1 and 8
+  # the arrays in directions are passed as dir
   def out_of_bounds?(start, dir)
     !((start[0] + dir[0]).between?(1, 8) && (start[1] + dir[1]).between?(1, 8))
   end
-
+  # A loop that pushes diagonal spaces based on if 
+  # they exist, are empty, hold friendly pieces 
+  # or hold an enemy piece
   def find_diagonals(start, board, dir)
     legal_diags = []
 
     loop do
       if out_of_bounds?(start, dir) || friendly?(start, start, board, dir)
         break
-      elsif legal_diags.empty?
+      elsif legal_diags.empty? # cannot call last on empty array
         legal_diags << (0..1).map { |i| start[i] + dir[i] }
         break if pushed_enemy?(legal_diags.last, board)
       else
         break if out_of_bounds?(legal_diags.last, dir)
+        # Called on next diag tile
         break if friendly?(legal_diags.last, start, board, dir)
+        # Since we ruled out hypothetical out of bounds tiles and tiles with team pieces
+        # either empty tiles or tiles with enemy pieces are added
         legal_diags << (0..1).map { |i| legal_diags.last[i] + dir[i] }
+        # Rook can't advanced past tne first hostile square
         break if pushed_enemy?(legal_diags.last, board)
       end
     end

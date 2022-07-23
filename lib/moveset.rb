@@ -55,10 +55,11 @@ module Diagonal
   def directions
     [[1, -1], [1, 1], [-1, 1], [-1, -1]]
   end
-
-  def friendly?(start, chosen, board, dir)
-    unless board[start[0] + dir[0]][start[1] + dir[1]].nil?
-      board[start[0] + dir[0]][start[1] + dir[1]].piece.team == board[chosen[0]][chosen[1]].piece.team
+  # Determines if the next diagonal square
+  # is occupied by a friendly piece
+  def friendly?(init, chosen, board, dir)
+    unless out_of_bounds?(init, dir)
+      board[init[0] + dir[0]][init[1] + dir[1]].piece.team == board[chosen[0]][chosen[1]].piece.team
     end
   end
 

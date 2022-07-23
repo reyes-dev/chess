@@ -4,6 +4,10 @@ require_relative 'moveset.rb'
 require_relative 'en_passant.rb'
 require_relative 'pawn_promotion.rb'
 require_relative 'neighbor_tile.rb'
+# All piece classes have a unique generate_legals method
+# that utilizes a module in a different file to
+# create an array of coordinates that the instance of
+# that class is allowed to move to on the board
 
 class Pawn
   include PawnMovement
@@ -11,9 +15,10 @@ class Pawn
   include Promotion
   include NeighborTile
 
-  attr_accessor :symbol, :legals, :moved, :en_passant_allowed 
+  attr_accessor :symbol, :legals, :moved, :en_passant_allowed
   attr_reader :team, :choice, :color
-
+  # A place to store Pawn instances
+  # used for En Passant functionality
   @@instances = []
 
   def initialize(color, team)
@@ -32,12 +37,12 @@ class Pawn
   def self.instances
     @@instances
   end
-
+  # restrict_en_passant limits a pawn from performing an
+  # en passant past a single turn
   def restrict_en_passant(turn)
     @@instances.each { |pawn| pawn.en_passant_allowed = false if pawn.team == turn }
   end
 
-  # Generates legal moves the pawn from the current position
   def generate_legals(init, board)
     @team == 'white' ? white_moves(board, init) : black_moves(board, init)
   end
@@ -71,7 +76,8 @@ class Knight
     @team = team
     @legals = []
   end
-
+  # Array of coordinates that when added to current position
+  # allow Knight to potentially move onto
   def possible_moves
     [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
   end
@@ -128,7 +134,8 @@ class King
     @team = team
     @legals = []
   end
-
+  # Array of coordinates that when added to current position
+  # allow King to potentially move onto
   def possible_moves
     [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]]
   end

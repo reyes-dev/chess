@@ -28,6 +28,15 @@ class Pawn
     @choice = nil
     @@instances << self
   end
+
+  def self.instances
+    @@instances
+  end
+
+  def restrict_en_passant(turn)
+    @@instances.each { |pawn| pawn.en_passant_allowed = false if pawn.team == turn }
+  end
+
   # Generates legal moves the pawn from the current position
   def generate_legals(init, board)
     @team == 'white' ? white_moves(board, init) : black_moves(board, init)

@@ -1,50 +1,53 @@
 module Cardinal
-    # Returns the Team (Black or White) of the Piece 
-  # at the given coordinate unless it's an empty space
+
   def check_team(x, y, board)
     board[x][y].piece.team if board[x][y].piece != ' '
+  end
+
+  def same_team(x, y, init, board)
+    board[init[0]][init[1]].piece.team == check_team(x, y, board)
   end
   # Four helper methods that add all the directions that
   # The Rook piece is allowed to move to legals
   # Code is in place to break loop if square is filled by team
   # And to stop the loop after adding an enemy team-filled square
-  def upwards_legals(start, board)
-    (start[0] + 1).upto(8) do |x|
-      break if board[start[0]][start[1]].piece.team == check_team(x, start[1], board)
-      @legals << [x, start[1]]
-      break if board[x][start[1]].piece != ' '
+  def upwards_legals(init, board)
+    (init[0] + 1).upto(8) do |x|
+      break if same_team(x, init[1], init, board) # break before adding team piece
+      @legals << [x, init[1]]
+      break if board[x][init[1]].piece != ' ' # break after adding enemy piece
     end
   end
 
-  def downwards_legals(start, board)
-    (start[0] - 1).downto(1) do |x|
-      break if board[start[0]][start[1]].piece.team == check_team(x, start[1], board)
-      @legals << [x, start[1]]
-      break if board[x][start[1]].piece != ' '
+  def downwards_legals(init, board)
+    (init[0] - 1).downto(1) do |x|
+      break if same_team(x, init[1], init, board)
+      @legals << [x, init[1]]
+      break if board[x][init[1]].piece != ' '
     end
   end
 
-  def rightwards_legals(start, board)
-    (start[1] + 1).upto(8) do |y|
-      break if board[start[0]][start[1]].piece.team == check_team(start[0], y, board)
-      @legals << [start[0], y]
-      break if board[start[0]][y].piece != ' '
+  def rightwards_legals(init, board)
+    (init[1] + 1).upto(8) do |y|
+      break if same_team(init[0], y, init, board)
+      @legals << [init[0], y]
+      break if board[init[0]][y].piece != ' '
     end
   end
 
-  def leftwards_legals(start, board)
-    (start[1] - 1).downto(1) do |y|
-      break if board[start[0]][start[1]].piece.team == check_team(start[0], y, board)
-      @legals << [start[0], y]
-      break if board[start[0]][y].piece != ' '
+  def leftwards_legals(init, board)
+    (init[1] - 1).downto(1) do |y|
+      break if same_team(init[0], y, init, board)
+      @legals << [init[0], y]
+      break if board[init[0]][y].piece != ' '
     end
   end
 
-  def cardinal_legals(start, board)
-    upwards_legals(start, board)
-    downwards_legals(start, board)
-    rightwards_legals(start, board)
-    leftwards_legals(start, board)
+  def cardinal_legals(init, board)
+    upwards_legals(init, board)
+    downwards_legals(init, board)
+    rightwards_legals(init, board)
+    leftwards_legals(init, board)
   end
 end
 

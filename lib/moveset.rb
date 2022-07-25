@@ -137,11 +137,14 @@ module EightMoves
 end
 
 module PawnMovement
+  def dbl_empty?(board, init)
+    no_piece?(board[init[0] + 1][init[1]]) && no_piece?(board[init[0] + 2][init[1]])
+  end
   # Uses enemy? method from NeighborTile module
   # Adds first and second tile ahead of pawn to @legals
   def white_legal_forwards(board, init)
-    @legals << [init[0] + 1, init[1]] unless enemy?(board, init, [1, 0])
-    @legals << [init[0] + 2, init[1]] unless @moved == true || enemy?(board, init, [2, 0])
+    @legals << [init[0] + 1, init[1]] if no_piece?(board[init[0] + 1][init[1]])
+    @legals << [init[0] + 2, init[1]] if @moved == false && dbl_empty?(board, init)
   end
 
   def black_legal_forwards(board, init)

@@ -769,5 +769,88 @@ describe PawnMovement do
         expect(result).to eq([[3, 4], [4, 4], [3, 3], [3, 5]])
       end
     end
+
+    context 'When an enemy piece is in front of a pawn that has not yet moved' do
+       it 'Should not be able to leap over the enemy piece' do
+         chessboard.board = {
+           8 => { 1 => Square.new(:light_white),
+                  2 => Square.new(:light_red),
+                  3 => Square.new(:light_white),
+                  4 => Square.new(:light_red),
+                  5 => Square.new(:light_white),
+                  6 => Square.new(:light_red),
+                  7 => Square.new(:light_white),
+                  8 => Square.new(:light_red) },
+ 
+           7 => { 1 => Square.new(:light_red),
+                  2 => Square.new(:light_white),
+                  3 => Square.new(:light_red),
+                  4 => Square.new(:light_white),
+                  5 => Square.new(:light_red),
+                  6 => Square.new(:light_white),
+                  7 => Square.new(:light_red),
+                  8 => Square.new(:light_white) },
+ 
+           6 => { 1 => Square.new(:light_white),
+                  2 => Square.new(:light_red),
+                  3 => Square.new(:light_white),
+                  4 => Square.new(:light_red),
+                  5 => Square.new(:light_white),
+                  6 => Square.new(:light_red),
+                  7 => Square.new(:light_white),
+                  8 => Square.new(:light_red) },
+ 
+           5 => { 1 => Square.new(:light_red),
+                  2 => Square.new(:light_white),
+                  3 => Square.new(:light_red),
+                  4 => Square.new(:light_white),
+                  5 => Square.new(:light_red),
+                  6 => Square.new(:light_white),
+                  7 => Square.new(:light_red),
+                  8 => Square.new(:light_white) },
+ 
+           4 => { 1 => Square.new(:light_white),
+                  2 => Square.new(:light_red),
+                  3 => Square.new(:light_white),
+                  4 => Square.new(:light_red),
+                  5 => Square.new(:light_white),
+                  6 => Square.new(:light_red),
+                  7 => Square.new(:light_white),
+                  8 => Square.new(:light_red) },
+ 
+           3 => { 1 => Square.new(:light_red),
+                  2 => Square.new(:light_white),
+                  3 => Square.new(:light_red),
+                  4 => Square.new(Pawn.new(:black, 'black'), :light_white),
+                  5 => Square.new(:light_red),
+                  6 => Square.new(:light_white),
+                  7 => Square.new(:light_red),
+                  8 => Square.new(:light_white) },
+ 
+           2 => { 1 => Square.new(:light_white),
+                  2 => Square.new(:light_red),
+                  3 => Square.new(:light_white),
+                  4 => Square.new(Pawn.new(:white, 'white'), :light_red),
+                  5 => Square.new(:light_white),
+                  6 => Square.new(:light_red),
+                  7 => Square.new(:light_white),
+                  8 => Square.new(:light_red) },
+ 
+           1 => { 1 => Square.new(:light_red),
+                  2 => Square.new(:light_white),
+                  3 => Square.new(:light_red),
+                  4 => Square.new(:light_white),
+                  5 => Square.new(:light_red),
+                  6 => Square.new(:light_white),
+                  7 => Square.new(:light_red),
+                  8 => Square.new(:light_white) }
+         }
+         board = chessboard.board
+         pawn = board[2][4].piece
+         pawn.white_moves(board, [2, 4])
+         result = pawn.legals
+         expect(result).not_to include([4, 4])
+       end
+     end
   end
 end

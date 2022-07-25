@@ -1,5 +1,4 @@
 module Cardinal
-
   def check_team(x, y, board)
     board[x][y].piece.team if board[x][y].piece != ' '
   end
@@ -7,6 +6,7 @@ module Cardinal
   def same_team(x, y, init, board)
     board[init[0]][init[1]].piece.team == check_team(x, y, board)
   end
+
   # Four helper methods that add all the directions that
   # The Rook piece is allowed to move to legals
   # Code is in place to break loop if square is filled by team
@@ -14,6 +14,7 @@ module Cardinal
   def upwards_legals(init, board)
     (init[0] + 1).upto(8) do |x|
       break if same_team(x, init[1], init, board) # break before adding team piece
+
       @legals << [x, init[1]]
       break if board[x][init[1]].piece != ' ' # break after adding enemy piece
     end
@@ -22,6 +23,7 @@ module Cardinal
   def downwards_legals(init, board)
     (init[0] - 1).downto(1) do |x|
       break if same_team(x, init[1], init, board)
+
       @legals << [x, init[1]]
       break if board[x][init[1]].piece != ' '
     end
@@ -30,6 +32,7 @@ module Cardinal
   def rightwards_legals(init, board)
     (init[1] + 1).upto(8) do |y|
       break if same_team(init[0], y, init, board)
+
       @legals << [init[0], y]
       break if board[init[0]][y].piece != ' '
     end
@@ -38,6 +41,7 @@ module Cardinal
   def leftwards_legals(init, board)
     (init[1] - 1).downto(1) do |y|
       break if same_team(init[0], y, init, board)
+
       @legals << [init[0], y]
       break if board[init[0]][y].piece != ' '
     end
@@ -55,6 +59,7 @@ module Diagonal
   def directions
     [[1, -1], [1, 1], [-1, 1], [-1, -1]]
   end
+
   # Determines if the next diagonal square
   # is occupied by a friendly piece
   def friendly?(init, chosen, board, dir)
@@ -62,17 +67,20 @@ module Diagonal
       board[init[0] + dir[0]][init[1] + dir[1]].piece.team == board[chosen[0]][chosen[1]].piece.team
     end
   end
+
   # Called after pushing a square
   def pushed_enemy?(tile, board)
     board[tile[0]][tile[1]].piece != ' '
   end
+
   # x, y coordinates on board can only be between 1 and 8
   # the arrays in directions are passed as dir
   def out_of_bounds?(start, dir)
     !((start[0] + dir[0]).between?(1, 8) && (start[1] + dir[1]).between?(1, 8))
   end
-  # A loop that pushes diagonal spaces based on if 
-  # they exist, are empty, hold friendly pieces 
+
+  # A loop that pushes diagonal spaces based on if
+  # they exist, are empty, hold friendly pieces
   # or hold an enemy piece
   def find_diagonals(start, board, dir)
     legal_diags = []
@@ -87,6 +95,7 @@ module Diagonal
         break if out_of_bounds?(legal_diags.last, dir)
         # Called on next diag tile
         break if friendly?(legal_diags.last, start, board, dir)
+
         # Since we ruled out hypothetical out of bounds tiles and tiles with team pieces
         # either empty tiles or tiles with enemy pieces are added
         legal_diags << (0..1).map { |i| legal_diags.last[i] + dir[i] }
@@ -107,10 +116,12 @@ module EightMoves
   def different_teams?(start, fin, board)
     board[fin[0]][fin[1]].piece.team != board[start[0]][start[1]].piece.team
   end
+
   # Using Knight's coordinate, combine with each possible move
   def combine_moves(start)
     0.upto(7) { |n| @legals << (0..1).map { |i| start[i] + possible_moves[n][i] } }
   end
+
   # Filters illegal moves out of @legals
   def filter_moves(start, board)
     # Filters by keeping arrays where both elements are between 1 and 8
@@ -135,12 +146,13 @@ module PawnMovement
 
   def black_legal_forwards(board, init)
     @legals << [init[0] - 1, init[1]] unless enemy?(board, init, [-1, 0])
-    @legals << [init[0] - 2, init[1]] unless @moved == true || enemy?(board, init, [-2,0])
+    @legals << [init[0] - 2, init[1]] unless @moved == true || enemy?(board, init, [-2, 0])
   end
 
   def w_m
     [[1, -1], [1, 1]]
   end
+
   # Adds diagonal adjacent tile to @legals only if it holds enemy piece
   def white_legal_diag(board, init)
     w_m.each { |m| @legals << [init[0] + m[0], init[1] + m[1]] if enemy?(board, init, m) }

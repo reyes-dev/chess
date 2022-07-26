@@ -126,13 +126,14 @@ end
 class King
   include EightMoves
 
-  attr_accessor :symbol, :legals
+  attr_accessor :symbol, :legals, :in_check
   attr_reader :team
 
   def initialize(color, team)
     @symbol = "\u265A".colorize(color: color)
     @team = team
     @legals = []
+    @in_check = false
   end
   # Array of coordinates that when added to current position
   # allow King to potentially move onto

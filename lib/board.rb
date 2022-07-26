@@ -10,6 +10,12 @@ class String
   # the piece on a square but the square is empty
   def team
   end
+  
+  def generate_legals(init = nil, board = nil)
+  end
+  
+  def legals
+  end
 end
 
 class Square

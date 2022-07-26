@@ -1,13 +1,13 @@
 require_relative 'deep_dup.rb'
 
 class Check
-  def check?(board, king, next_turn)
+  def check?(board, king, enemy)
     check = false
     # Go through the entire board hash's 64 squares
     board.each do |row, columns|
       columns.each do |column, square|
         # If the piece on that sqr is an enemy
-        next unless square.piece.team == next_turn
+        next unless square.piece.team == enemy
         # Determine legals which can be check for enemy king
         square.piece.generate_legals([row, column], board) 
         square.piece.legals.each do |sqr|
@@ -25,13 +25,13 @@ class Check
   # Check on that board check? still returns true
   # If it does, meaning every possible legal move can't change
   # the result of check?, then it is mate
-  def mate?(board, king, turn, next_turn)
+  def mate?(board, king, ally, enemy)
     still_in_check = []
     # Go through the entire board hash's 64 squares
     board.each do |row, columns|
       columns.each do |column, square|
         # If the piece on that square is a team piece
-        next unless square.piece.team == turn
+        next unless square.piece.team == ally
         # Generate all the moves it can make, disregarding check for now
         square.piece.generate_legals([row, column], board)
         square.piece.legals.each do |sqr|
@@ -42,7 +42,7 @@ class Check
           fake_board[row][column].piece = ' '
           # Test if peforming a legal move leaves the board in check
           # or takes it out of check (pushes a false boolean)
-          still_in_check << check?(fake_board, king, next_turn)
+          still_in_check << check?(fake_board, king, enemy)
         end
       end
     end

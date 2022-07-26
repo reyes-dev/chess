@@ -1,8 +1,9 @@
 require_relative 'board.rb'
 require_relative 'team.rb'
 require_relative 'pieces.rb'
+require_relative 'checkmate.rb'
 
-class GamePlay
+class GamePlay < Check
   attr_accessor :old_pos, :new_pos
 
   def initialize
@@ -64,7 +65,13 @@ class GamePlay
     chessman.legals.any?([landing[0], landing[1]])
   end
 
+  def kings(board)
+    @white_king = board[1][5].piece
+    @black_king = board[8][5].piece
+  end
+
   def play(gameboard)
+    kings(gameboard.board)
     loop do
       puts "       --#{@turn}'s turn--\n"
       puts "\n"

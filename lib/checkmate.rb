@@ -71,7 +71,7 @@ class Check
   end
 
   def stalemate?(board, king, ally, enemy)
-    legals = []
+    legal = []
     # Go through the board hash's 64 squares
     board.each do |row, columns|
       columns.each do |column, square|
@@ -79,13 +79,14 @@ class Check
         next unless square.piece.team == ally
         # Generate all the moves it can make
         square.piece.generate_legals([row, column], board)
+
         # Filter out moves that put king in check
         filter_legals(board, king, square.piece, [row, column], enemy)
-        legals << square.piece.legals
+        square.piece.legals.each { |move| legal << move }
         square.piece.legals.clear
       end
     end
     # If legals is empty, there are no possible legal moves
-    legals.flatten.empty? && !check?(board, king, enemy)
+    legal.flatten.empty? && !check?(board, king, enemy)
   end
 end

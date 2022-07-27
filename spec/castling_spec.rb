@@ -260,7 +260,7 @@ describe Castling do
         board = chessboard.board
         king = board[1][5].piece
         rook = board[1][8].piece
-        result = king.castlable?(board, king, rook, [1, 5], [1, 8], 'black')
+        result = king.castlable?(board, king, rook, [1, 5], [1, 8], [1, 7], 'black')
         expect(result).to eq(false)
       end
     end
@@ -343,7 +343,7 @@ describe Castling do
         board = chessboard.board
         king = board[1][5].piece
         rook = board[1][8].piece
-        result = king.castlable?(board, king, rook, [1, 5], [1, 8], 'black')
+        result = king.castlable?(board, king, rook, [1, 5], [1, 8], [1, 7], 'black')
         expect(result).to eq(true)
       end
     end
@@ -432,9 +432,9 @@ describe Castling do
       end
     end
 
-    describe '#to_attacked_sqr?' do
-      context 'When the king tries to move to a square that is attacked by an enemy piece/leaves the king in check' do
-        it 'Returns false' do
+    describe '#onto_attacked_sqr?' do
+      context 'When king attempts to land on square that is attacked by enemy' do
+        it 'Returns true' do
           chessboard.board = {
             8 => { 1 => Square.new(Rook.new(:black, 'black'), :light_white),
                    2 => Square.new(:light_red),
@@ -512,7 +512,8 @@ describe Castling do
           print "\n"
           chessboard.display_board
           king = board[1][5].piece
-          result = king.to_attacked_sqr?
+          result = king.onto_attacked_sqr?(board, king, [1, 5], [1, 7], 'black')
+          expect(result).to eq(true)
         end
       end
     end

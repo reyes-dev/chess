@@ -2,6 +2,16 @@ require_relative 'pieces.rb'
 require_relative 'checkmate.rb'
 
 class Castling < Check
+  def onto_attacked_sqr?(board, king, init, fin, enemy)
+    # Create a deep copy of the board
+    fake_board = board.deep_dup
+    # Move the king two squares over to its landing spot
+    fake_board[init[0]][init[1]].piece = ' '
+    fake_board[fin[0]][fin[1]].piece = king
+    # If king is in check, it's on an attacked square
+    check?(fake_board, king, enemy)
+  end
+
   def over_attacked_sqr?(board, king_pos, rook_pos, enemy)
     under_attack = false
     # Go through the entire board hash's 64 squares
@@ -50,7 +60,7 @@ class Castling < Check
 
   # castleable? makes sure that all the conditions of castling
   # are met before letting a castling be performed
-  def castlable?(board, king, rook, king_pos, rook_pos, enemy)
-    squares_empty?(board, king_pos, rook_pos) && not_yet_moved(king, rook) && !(check?(board, king, enemy))
+  def castlable?(board, king, rook, king_pos, rook_pos, fin, enemy)
+    !over_attacked_sqr?(board, king_pos, rook_pos, enemy) && !onto_attacked_sqr?(board, king, king_pos, fin, enemy) && squares_empty?(board, king_pos, rook_pos) && not_yet_moved(king, rook) && !(check?(board, king, enemy))
   end
 end

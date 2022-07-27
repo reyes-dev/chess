@@ -4,6 +4,7 @@ require_relative 'moveset.rb'
 require_relative 'en_passant.rb'
 require_relative 'pawn_promotion.rb'
 require_relative 'neighbor_tile.rb'
+require_relative 'castling.rb'
 # All piece classes have a unique generate_legals method
 # that utilizes a module in a different file to
 # create an array of coordinates that the instance of
@@ -51,13 +52,14 @@ end
 class Rook
   include Cardinal
 
-  attr_accessor :symbol, :legals
+  attr_accessor :symbol, :legals, :moved
   attr_reader :team
 
   def initialize(color, team)
     @symbol = "\u265C".colorize(color: color)
     @team = team
     @legals = []
+    @moved = false
   end
 
   def generate_legals(start, board)
@@ -123,10 +125,10 @@ class Queen
   end
 end
 
-class King
+class King < Castling
   include EightMoves
 
-  attr_accessor :symbol, :legals, :in_check
+  attr_accessor :symbol, :legals, :moved, :in_check
   attr_reader :team
 
   def initialize(color, team)
@@ -134,6 +136,7 @@ class King
     @team = team
     @legals = []
     @in_check = false
+    @moved = false
   end
   # Array of coordinates that when added to current position
   # allow King to potentially move onto

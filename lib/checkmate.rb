@@ -69,4 +69,23 @@ class Check
     # no legal moves can take the king out of check 
     still_in_check.all?(true)
   end
+
+  def stalemate?(board, king, ally, enemy)
+    legals = []
+    # Go through the board hash's 64 squares
+    board.each do |row, columns|
+      columns.each do |column, square|
+        # If the piece on that square is a team piece
+        next unless square.piece.team == ally
+        # Generate all the moves it can make
+        square.piece.generate_legals([row, column], board)
+        # Filter out moves that put king in check
+        filter_legals(board, king, square.piece, [row, column], enemy)
+        legals << square.piece.legals
+        square.piece.legals.clear
+      end
+    end
+    # If legals is empty, there are no possible legal moves
+    legals.flatten.empty? && !check?(board, king, enemy)
+  end
 end

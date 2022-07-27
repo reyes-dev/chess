@@ -11,7 +11,7 @@ module EnPassant
   def allow_passant(board, fin, adj)
     board[fin[0] + adj[0]][fin[1] + adj[1]].piece.en_passant_allowed = true
   end
-  # Pawn that double stepped is stored
+  # Square that pawn that double stepped lands on
   def store_dbl(gb, board, fin)
     gb.dbl_step_pawn = board[fin[0]][fin[1]]
   end

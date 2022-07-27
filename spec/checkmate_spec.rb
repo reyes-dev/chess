@@ -81,7 +81,7 @@ describe Check do
                  8 => Square.new(:light_white) }
         }
         board = chessboard.board
-        #  chessboard.display_board
+        chessboard.display_board
         king = board[8][5].piece
         result = check.check?(board, king, 'white')
         expect(result).to eq(true)
@@ -164,8 +164,8 @@ describe Check do
                  8 => Square.new(:light_white) }
         }
         board = chessboard.board
-        #  print "\n"
-        #  chessboard.display_board
+        print "\n"
+        chessboard.display_board
         king = board[8][6].piece
         result = check.check?(board, king, 'white')
         expect(result).to eq(false)
@@ -250,8 +250,8 @@ describe Check do
                  8 => Square.new(:light_white) }
         }
         board = chessboard.board
-        #print "\n"
-        #chessboard.display_board
+        print "\n"
+        chessboard.display_board
         king = board[8][8].piece
         result = check.mate?(board, king, 'black', 'white')
         expect(result).to eq(true)

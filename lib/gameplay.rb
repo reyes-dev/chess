@@ -84,8 +84,11 @@ class GamePlay < Check
       gameboard.display_board
       board = gameboard.board
       puts "\n #{@turn} is in check! \n" if check?(board, current_king(@turn), @next_turn)
-      if mate?(board, current_king(@turn), @turn, @next_turn)
+      if check?(board, current_king(@turn), @next_turn) && mate?(board, current_king(@turn), @turn, @next_turn)
         puts "\n #{@turn} is in checkmate! #{@next_turn} wins the game!"
+        break
+      elsif stalemate?(board, current_king(@turn), @turn, @next_turn)
+        puts "\n #{@turn} is in stalemate! Game is a draw!"
         break
       end
       set_old_position

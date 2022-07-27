@@ -83,7 +83,11 @@ class GamePlay < Check
       # That isn't empty and holds a piece that matches their team
       gameboard.display_board
       board = gameboard.board
-      puts "#{@turn} is in check! \n" if check?(board, current_king(@turn), @next_turn)
+      puts "\n #{@turn} is in check! \n" if check?(board, current_king(@turn), @next_turn)
+      if mate?(board, current_king(@turn), @turn, @next_turn)
+        puts "\n #{@turn} is in checkmate! #{@next_turn} wins the game!"
+        break
+      end
       set_old_position
       chessman = board[@old_pos[0]][@old_pos[1]].piece
       redo if chessman == ' '

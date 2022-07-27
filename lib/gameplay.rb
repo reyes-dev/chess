@@ -74,6 +74,10 @@ class GamePlay < Check
     turn == 'white' ? @white_king : @black_king
   end
 
+  def moved_once(piece)
+    piece.moved = true if [Pawn, Rook, King].any? { |klass| piece.instance_of?(klass) }
+  end
+
   def play(gameboard)
     kings(gameboard.board)
     loop do
@@ -113,7 +117,7 @@ class GamePlay < Check
       move_to(chessman, @new_pos, board)
       chessman.promote?(board, @new_pos, @turn) if chessman.instance_of?(Pawn)
       chessman.legals.clear
-      chessman.instance_of?(Pawn) ? chessman.moved = true : nil
+      moved_once(chessman)
       chessman.en_passantable(gameboard, board, chessman, @old_pos, @new_pos) if chessman.instance_of?(Pawn)
       switch_turns
 

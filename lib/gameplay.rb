@@ -100,6 +100,7 @@ class GamePlay < Check
       chessman.generate_legals(@old_pos, board)
       chessman.en_passant(gameboard, @new_pos) if chessman.instance_of?(Pawn)
       chessman.restrict_en_passant(@turn) if chessman.instance_of?(Pawn)
+      filter_legals(board, current_king(@turn), chessman, @old_pos, @next_turn)
       chessman.legals.clear unless legal?(chessman, @new_pos)
       redo unless legal?(chessman, @new_pos)
       # Phase 3 -> Moves selected piece to new position

@@ -1,7 +1,7 @@
-require_relative 'board.rb'
-require_relative 'team.rb'
-require_relative 'pieces.rb'
-require_relative 'checkmate.rb'
+require_relative 'board'
+require_relative 'team'
+require_relative 'pieces'
+require_relative 'checkmate'
 
 class GamePlay < Check
   attr_accessor :old_pos, :new_pos
@@ -12,14 +12,14 @@ class GamePlay < Check
     @turn = 'white'
     @next_turn = 'black'
     @letters = {
-      "a" => 1,
-      "b" => 2,
-      "c" => 3,
-      "d" => 4,
-      "e" => 5,
-      "f" => 6,
-      "g" => 7,
-      "h" => 8
+      'a' => 1,
+      'b' => 2,
+      'c' => 3,
+      'd' => 4,
+      'e' => 5,
+      'f' => 6,
+      'g' => 7,
+      'h' => 8
     }
   end
 
@@ -70,6 +70,10 @@ class GamePlay < Check
     @black_king = board[8][5].piece
   end
 
+  def current_king(turn)
+    turn == 'white' ? @white_king : @black_king
+  end
+
   def play(gameboard)
     kings(gameboard.board)
     loop do
@@ -79,9 +83,10 @@ class GamePlay < Check
       # That isn't empty and holds a piece that matches their team
       gameboard.display_board
       board = gameboard.board
+      puts "#{@turn} is in check! \n" if check?(board, current_king(@turn), @next_turn)
       set_old_position
       chessman = board[@old_pos[0]][@old_pos[1]].piece
-      redo if chessman == " "
+      redo if chessman == ' '
       redo unless chessman.team == @turn
       # Phase 2 -> player selects a new square to move the piece
       # a set of allowed moves is generated for selected piece
@@ -94,7 +99,7 @@ class GamePlay < Check
       chessman.legals.clear unless legal?(chessman, @new_pos)
       redo unless legal?(chessman, @new_pos)
       # Phase 3 -> Moves selected piece to new position
-      # Promotes if eligible Pawn, edits @moved variable and 
+      # Promotes if eligible Pawn, edits @moved variable and
       # Makes pawn eligible to be attacked en passant if conditions are met
       move_from(@old_pos, board)
       move_to(chessman, @new_pos, board)

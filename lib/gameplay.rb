@@ -70,6 +70,13 @@ class GamePlay < Check
     @black_king = board[8][5].piece
   end
 
+  def rooks(board)
+    @black_left = board[8][1].piece
+    @black_right = board[8][8].piece
+    @white_left = board[1][1].piece
+    @white_right = board[1][8].piece
+  end
+
   def current_king(turn)
     turn == 'white' ? @white_king : @black_king
   end
@@ -78,8 +85,33 @@ class GamePlay < Check
     piece.moved = true if [Pawn, Rook, King].any? { |klass| piece.instance_of?(klass) }
   end
 
+  def get_white_rook(king_pos, fin)
+    king_pos[1] > fin[1] ? @white_left : @white_right
+  end
+
+  def get_black_rook(king_pos, fin)
+    king_pos[1] > fin[1] ? @black_left : @black_right
+  end
+
+  def get_rook(team, king_pos, fin)
+    team == 'white' ? get_white_rook(king_pos, fin) : get_black_rook(king_pos, fin)
+  end
+
+  def get_white_pos(king_pos, fin)
+    king_pos[1] > fin[1] ? [1, 1] : [1, 8]
+  end
+
+  def get_black_pos(king_pos, fin)
+    king_pos[1] > fin[1] ? [8, 1] : [8, 8]
+  end
+
+  def rook_pos(team, king_pos, fin)
+    team == 'white' ? get_white_pos(king_pos, fin) : get_black_pos(king_pos, fin)
+  end
+
   def play(gameboard)
     kings(gameboard.board)
+    rooks(gameboard.board)
     loop do
       puts "       --#{@turn}'s turn--\n"
       puts "\n"
@@ -108,6 +140,12 @@ class GamePlay < Check
       chessman.en_passant(gameboard, @new_pos) if chessman.instance_of?(Pawn)
       chessman.restrict_en_passant(@turn) if chessman.instance_of?(Pawn)
       filter_legals(board, current_king(@turn), chessman, @old_pos, @next_turn)
+      if chessman.instance_of?(King)
+        rook = get_rook(@turn, @old_pos, @new_pos)
+        rook_pos = rook_pos(@turn, @old_pos, @new_pos)
+        chessman.allow_castle(board, chessman, rook, @old_pos, rook_pos, @new_pos, @next_turn)
+        chessman.castle(board, chessman, rook, @old_pos, rook_pos, @new_pos, @next_turn)
+      end
       chessman.legals.clear unless legal?(chessman, @new_pos)
       redo unless legal?(chessman, @new_pos)
       # Phase 3 -> Moves selected piece to new position

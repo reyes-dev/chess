@@ -86,7 +86,15 @@ class Castling < Check
     board[sq[0]][sq[1]].space = " #{rook.symbol} ".colorize(background: board[sq[0]][sq[1]].color)
   end
 
+  def landing_sq(king_pos, rook_pos)
+    king_pos[1] > rook_pos[1] ? [king_pos[0], king_pos[1] - 2] : [king_pos[0], king_pos[1] + 2]
+  end
+
+  def do_castle(board, rook, king_pos, rook_pos, fin)
+    perform_castle(board, rook, king_pos, rook_pos) if fin == landing_sq(king_pos, rook_pos)
+  end
+
   def castle(board, king, rook, king_pos, rook_pos, fin, enemy)
-    perform_castle(board, rook, king_pos, rook_pos) if castlable?(board, king, rook, king_pos, rook_pos, fin, enemy)
+    do_castle(board, rook, king_pos, rook_pos, fin) if castlable?(board, king, rook, king_pos, rook_pos, fin, enemy)
   end
 end

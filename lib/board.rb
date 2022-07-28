@@ -1,5 +1,6 @@
 require_relative 'pieces'
 require_relative 'team'
+require_relative 'saving'
 
 class String
   # Lets a Square object set the center of @space to piece.symbol
@@ -28,29 +29,29 @@ class Square
   end
 end
 
-class Board < Team
-  attr_accessor :board, :dbl_step_pawn, :stepped_over
+class Board
+  include Saving
+  attr_accessor :board, :dbl_step_pawn, :stepped_over, :white_king, :black_king, :white_rook1, :white_rook2, :black_rook1, :black_rook2
 
-  def initialize
-    super
+  def initialize(dbl_step_pawn = nil, stepped_over = nil)
     @board = {
-      8 => { 1 => Square.new(@black_rook1, :light_white),
-             2 => Square.new(@black_knight1, :light_red),
-             3 => Square.new(@black_bishop1, :light_white),
-             4 => Square.new(@black_queen, :light_red),
-             5 => Square.new(@black_king, :light_white),
-             6 => Square.new(@black_bishop2, :light_red),
-             7 => Square.new(@black_knight2, :light_white),
-             8 => Square.new(@black_rook2, :light_red) },
+      8 => { 1 => Square.new(Rook.new(:black, 'black'), :light_white),
+             2 => Square.new(Knight.new(:black, 'black'), :light_red),
+             3 => Square.new(Bishop.new(:black, 'black'), :light_white),
+             4 => Square.new(Queen.new(:black, 'black'), :light_red),
+             5 => Square.new(King.new(:black, 'black'), :light_white),
+             6 => Square.new(Bishop.new(:black, 'black'), :light_red),
+             7 => Square.new(Knight.new(:black, 'black'), :light_white),
+             8 => Square.new(Rook.new(:black, 'black'), :light_red) },
 
-      7 => { 1 => Square.new(@black_pawn1, :light_red),
-             2 => Square.new(@black_pawn2, :light_white),
-             3 => Square.new(@black_pawn3, :light_red),
-             4 => Square.new(@black_pawn4, :light_white),
-             5 => Square.new(@black_pawn5, :light_red),
-             6 => Square.new(@black_pawn6, :light_white),
-             7 => Square.new(@black_pawn7, :light_red),
-             8 => Square.new(@black_pawn8, :light_white) },
+      7 => { 1 => Square.new(Pawn.new(:black, 'black'), :light_red),
+             2 => Square.new(Pawn.new(:black, 'black'), :light_white),
+             3 => Square.new(Pawn.new(:black, 'black'), :light_red),
+             4 => Square.new(Pawn.new(:black, 'black'), :light_white),
+             5 => Square.new(Pawn.new(:black, 'black'), :light_red),
+             6 => Square.new(Pawn.new(:black, 'black'), :light_white),
+             7 => Square.new(Pawn.new(:black, 'black'), :light_red),
+             8 => Square.new(Pawn.new(:black, 'black'), :light_white) },
 
       6 => { 1 => Square.new(:light_white),
              2 => Square.new(:light_red),
@@ -88,26 +89,32 @@ class Board < Team
              7 => Square.new(:light_red),
              8 => Square.new(:light_white) },
 
-      2 => { 1 => Square.new(@white_pawn1, :light_white),
-             2 => Square.new(@white_pawn2, :light_red),
-             3 => Square.new(@white_pawn3, :light_white),
-             4 => Square.new(@white_pawn4, :light_red),
-             5 => Square.new(@white_pawn5, :light_white),
-             6 => Square.new(@white_pawn6, :light_red),
-             7 => Square.new(@white_pawn7, :light_white),
-             8 => Square.new(@white_pawn8, :light_red) },
+      2 => { 1 => Square.new(Pawn.new(:white, 'white'), :light_white),
+             2 => Square.new(Pawn.new(:white, 'white'), :light_red),
+             3 => Square.new(Pawn.new(:white, 'white'), :light_white),
+             4 => Square.new(Pawn.new(:white, 'white'), :light_red),
+             5 => Square.new(Pawn.new(:white, 'white'), :light_white),
+             6 => Square.new(Pawn.new(:white, 'white'), :light_red),
+             7 => Square.new(Pawn.new(:white, 'white'), :light_white),
+             8 => Square.new(Pawn.new(:white, 'white'), :light_red) },
 
-      1 => { 1 => Square.new(@white_rook1, :light_red),
-             2 => Square.new(@white_knight1, :light_white),
-             3 => Square.new(@white_bishop1, :light_red),
-             4 => Square.new(@white_queen, :light_white),
-             5 => Square.new(@white_king, :light_red),
-             6 => Square.new(@white_bishop2, :light_white),
-             7 => Square.new(@white_knight2, :light_red),
-             8 => Square.new(@white_rook2, :light_white) }
+      1 => { 1 => Square.new(Rook.new(:white, 'white'), :light_red),
+             2 => Square.new(Knight.new(:white, 'white'), :light_white),
+             3 => Square.new(Bishop.new(:white, 'white'), :light_red),
+             4 => Square.new(Queen.new(:white, 'white'), :light_white),
+             5 => Square.new(King.new(:white, 'white'), :light_red),
+             6 => Square.new(Bishop.new(:white, 'white'), :light_white),
+             7 => Square.new(Knight.new(:white, 'white'), :light_red),
+             8 => Square.new(Rook.new(:white, 'white'), :light_white) }
     }
-    @dbl_step_pawn = nil # Stores square of pawn that double stepped
-    @stepped_over = nil # Stores square that pawn stepped over
+    @dbl_step_pawn = dbl_step_pawn
+    @stepped_over = stepped_over
+    @white_king = @board[1][5].piece
+    @white_rook1 = @board[1][1].piece
+    @white_rook2 = @board[1][8].piece
+    @black_king = @board[8][5].piece
+    @black_rook1 = @board[8][1].piece
+    @black_rook2 = @board[8][8].piece
   end
 
   def display_board

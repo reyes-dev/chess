@@ -9,7 +9,8 @@ module EnPassant
   end
   # An adjacent piece is given en passant ability
   def allow_passant(board, fin, adj)
-    board[fin[0] + adj[0]][fin[1] + adj[1]].piece.en_passant_allowed = true
+    piece = board[fin[0] + adj[0]][fin[1] + adj[1]].piece
+    piece.en_passant_allowed = true if piece.instance_of?(Pawn)
   end
   # Square that pawn that double stepped lands on
   def store_dbl(gb, board, fin)

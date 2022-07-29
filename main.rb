@@ -16,6 +16,10 @@ class Chess
     @game.play(@board)
   end
 
+  def start_AI
+    @game.play_AI(@board)
+  end
+
   def start_msg
     puts 'Welcome to Ruby Chess!'.colorize(:light_red)
     puts ' '
@@ -28,8 +32,9 @@ class Chess
     puts 'Enter the coordinates of the square you want to land on.'
     puts ' '
     puts 'Enter one of the following to play: '
-    puts '   [1]'.colorize(:light_red) + ' to play a ' + 'new game'.colorize(:light_red)
-    puts '   [2]'.colorize(:light_red) + ' to load a ' + 'saved game'.colorize(:light_red)
+    puts '   [1]'.colorize(:light_red) + ' to play a ' + 'new game '.colorize(:light_red) + 'against Human opponent.'
+    puts '   [2]'.colorize(:light_red) + ' to play a ' + 'new game '.colorize(:light_red) + 'against AI opponent.'
+    puts '   [3]'.colorize(:light_red) + ' to ' + 'load game '.colorize(:light_red)
     puts ' '
     puts ' '
   end
@@ -40,6 +45,8 @@ class Chess
       if choice.match?(/^1{1}$/)
         start
       elsif choice.match?(/^2{1}$/)
+        start_AI
+      elsif choice.match?(/^3{1}$/)
         load_game
       end
     end

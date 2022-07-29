@@ -80,10 +80,10 @@ class Game < Check
   end
 
   def to_yaml
-    YAML.dump ({
-      :turn => @turn,
-      :next_turn => @next_turn
-    })
+    YAML.dump({
+      turn: @turn,
+      next_turn: @next_turn
+              })
   end
 
   def play(gameboard)
@@ -133,6 +133,101 @@ class Game < Check
       switch_turns
 
       puts "\n"
+    end
+  end
+
+  def random_piece(board)
+    pieces = []
+    board.each do |row, columns|
+      columns.each do |column, square|
+        next unless square.piece.team == @turn
+        pieces << [row, column]
+      end
+    end
+    pieces.sample
+  end
+
+  def play_AI(gameboard)
+    loop do
+      if @turn == 'white'
+        board = gameboard.board
+        puts "\n #{@turn} is in check! \n" if check?(board, current_king(gameboard, @turn), @next_turn)
+        if check?(board, current_king(gameboard, @turn),
+                  @next_turn) && mate?(board, current_king(gameboard, @turn), @turn, @next_turn)
+          puts "\n #{@turn} is in checkmate! #{@next_turn} wins the game!"
+          break
+        elsif stalemate?(board, current_king(gameboard, @turn), @turn, @next_turn)
+          puts "\n #{@turn} is in stalemate! Game is a draw!"
+          break
+        end
+        set_old_position(gameboard)
+        chessman = board[@old_pos[0]][@old_pos[1]].piece
+        redo if chessman == ' '
+        redo unless chessman.team == @turn
+        set_new_position
+        chessman.generate_legals(@old_pos, board)
+        chessman.en_passant(gameboard, @new_pos) if chessman.instance_of?(Pawn)
+        chessman.restrict_en_passant(@turn) if chessman.instance_of?(Pawn)
+        filter_legals(board, current_king(gameboard, @turn), chessman, @old_pos, @next_turn)
+        if chessman.instance_of?(King)
+          rook = get_rook(gameboard, @turn, @old_pos, @new_pos)
+          rook_pos = rook_pos(@turn, @old_pos, @new_pos)
+          chessman.allow_castle(board, chessman, rook, @old_pos, rook_pos, @new_pos, @next_turn)
+          chessman.castle(board, chessman, rook, @old_pos, rook_pos, @new_pos, @next_turn)
+        end
+        chessman.legals.clear unless legal?(chessman, @new_pos)
+        redo unless legal?(chessman, @new_pos)
+        move_from(@old_pos, board)
+        move_to(chessman, @new_pos, board)
+        chessman.promote?(board, @new_pos, @turn) if chessman.instance_of?(Pawn)
+        chessman.legals.clear
+        moved_once(chessman)
+        chessman.en_passantable(gameboard, board, chessman, @old_pos, @new_pos) if chessman.instance_of?(Pawn)
+        switch_turns
+        puts "\n"
+      elsif @turn == 'black'
+        board = gameboard.board
+        puts "\n #{@turn} is in check! \n" if check?(board, current_king(gameboard, @turn), @next_turn)
+        if check?(board, current_king(gameboard, @turn),
+                  @next_turn) && mate?(board, current_king(gameboard, @turn), @turn, @next_turn)
+          puts "\n #{@turn} is in checkmate! #{@next_turn} wins the game!"
+          break
+        elsif stalemate?(board, current_king(gameboard, @turn), @turn, @next_turn)
+          puts "\n #{@turn} is in stalemate! Game is a draw!"
+          break
+        end
+        puts "       --#{@turn}'s turn--\n"
+        puts "\n"
+        gameboard.display_board
+        puts "\n"
+        sleep 2
+        @old_pos = random_piece(board)
+        chessman = board[@old_pos[0]][@old_pos[1]].piece
+        redo if chessman == ' '
+        redo unless chessman.team == @turn
+        chessman.generate_legals(@old_pos, board)
+        filter_legals(board, current_king(gameboard, @turn), chessman, @old_pos, @next_turn)
+        redo if chessman.legals.empty?
+        @new_pos = chessman.legals.sample
+        chessman.en_passant(gameboard, @new_pos) if chessman.instance_of?(Pawn)
+        chessman.restrict_en_passant(@turn) if chessman.instance_of?(Pawn)
+        if chessman.instance_of?(King)
+          rook = get_rook(gameboard, @turn, @old_pos, @new_pos)
+          rook_pos = rook_pos(@turn, @old_pos, @new_pos)
+          chessman.allow_castle(board, chessman, rook, @old_pos, rook_pos, @new_pos, @next_turn)
+          chessman.castle(board, chessman, rook, @old_pos, rook_pos, @new_pos, @next_turn)
+        end
+        chessman.legals.clear unless legal?(chessman, @new_pos)
+        redo unless legal?(chessman, @new_pos)
+        move_from(@old_pos, board)
+        move_to(chessman, @new_pos, board)
+        chessman.promote?(board, @new_pos, @turn) if chessman.instance_of?(Pawn)
+        chessman.legals.clear
+        moved_once(chessman)
+        chessman.en_passantable(gameboard, board, chessman, @old_pos, @new_pos) if chessman.instance_of?(Pawn)
+        switch_turns
+        puts "\n"
+      end
     end
   end
 end

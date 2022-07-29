@@ -2,15 +2,25 @@ require_relative 'board'
 require_relative 'team'
 require_relative 'pieces'
 require_relative 'checkmate'
+require_relative 'saving'
+require_relative 'rooksandkings'
+# require_relative '../main'
 
-class GamePlay < Check
+class Game < Check
+  include RooksAndKings
+  include Saving
   attr_accessor :old_pos, :new_pos
 
-  def initialize
-    @old_pos = nil
-    @new_pos = nil
-    @turn = 'white'
-    @next_turn = 'black'
+  def initialize(
+    old_pos = nil,
+    new_pos = nil,
+    turn = 'white',
+    next_turn = 'black'
+  )
+    @old_pos = old_pos
+    @new_pos = new_pos
+    @turn = turn
+    @next_turn = next_turn
     @letters = {
       'a' => 1,
       'b' => 2,
@@ -31,9 +41,17 @@ class GamePlay < Check
   def set_old_position
     loop do
       puts "\n"
-      print 'Enter starting position: '
+      puts 'Enter the coordinates of the piece you want to move '
+      puts '[Q] to Quit or [S] to Save'
+      puts "\n"
       @old_pos = gets.chomp.split('')
-      break if @old_pos.join.match?(/^[a-h][1-8]$/)
+      if @old_pos.join.match?(/^[a-h][1-8]$/)
+        break
+      elsif @old_pos.join.match?('s')
+        save_game
+      elsif @old_pos.join.match?('q')
+        exit
+      end
     end
     convert_letter(@old_pos)
   end
@@ -65,53 +83,11 @@ class GamePlay < Check
     chessman.legals.any?([landing[0], landing[1]])
   end
 
-  def kings(board)
-    @white_king = board[1][5].piece
-    @black_king = board[8][5].piece
-  end
-
-  def rooks(board)
-    @black_left = board[8][1].piece
-    @black_right = board[8][8].piece
-    @white_left = board[1][1].piece
-    @white_right = board[1][8].piece
-  end
-
-  def current_king(turn)
-    turn == 'white' ? @white_king : @black_king
-  end
-
   def moved_once(piece)
     piece.moved = true if [Pawn, Rook, King].any? { |klass| piece.instance_of?(klass) }
   end
 
-  def get_white_rook(king_pos, fin)
-    king_pos[1] > fin[1] ? @white_left : @white_right
-  end
-
-  def get_black_rook(king_pos, fin)
-    king_pos[1] > fin[1] ? @black_left : @black_right
-  end
-
-  def get_rook(team, king_pos, fin)
-    team == 'white' ? get_white_rook(king_pos, fin) : get_black_rook(king_pos, fin)
-  end
-
-  def get_white_pos(king_pos, fin)
-    king_pos[1] > fin[1] ? [1, 1] : [1, 8]
-  end
-
-  def get_black_pos(king_pos, fin)
-    king_pos[1] > fin[1] ? [8, 1] : [8, 8]
-  end
-
-  def rook_pos(team, king_pos, fin)
-    team == 'white' ? get_white_pos(king_pos, fin) : get_black_pos(king_pos, fin)
-  end
-
   def play(gameboard)
-    kings(gameboard.board)
-    rooks(gameboard.board)
     loop do
       puts "       --#{@turn}'s turn--\n"
       puts "\n"
@@ -119,11 +95,12 @@ class GamePlay < Check
       # That isn't empty and holds a piece that matches their team
       gameboard.display_board
       board = gameboard.board
-      puts "\n #{@turn} is in check! \n" if check?(board, current_king(@turn), @next_turn)
-      if check?(board, current_king(@turn), @next_turn) && mate?(board, current_king(@turn), @turn, @next_turn)
+      puts "\n #{@turn} is in check! \n" if check?(board, current_king(gameboard, @turn), @next_turn)
+      if check?(board, current_king(gameboard, @turn),
+                @next_turn) && mate?(board, current_king(gameboard, @turn), @turn, @next_turn)
         puts "\n #{@turn} is in checkmate! #{@next_turn} wins the game!"
         break
-      elsif stalemate?(board, current_king(@turn), @turn, @next_turn)
+      elsif stalemate?(board, current_king(gameboard, @turn), @turn, @next_turn)
         puts "\n #{@turn} is in stalemate! Game is a draw!"
         break
       end
@@ -139,9 +116,9 @@ class GamePlay < Check
       chessman.generate_legals(@old_pos, board)
       chessman.en_passant(gameboard, @new_pos) if chessman.instance_of?(Pawn)
       chessman.restrict_en_passant(@turn) if chessman.instance_of?(Pawn)
-      filter_legals(board, current_king(@turn), chessman, @old_pos, @next_turn)
+      filter_legals(board, current_king(gameboard, @turn), chessman, @old_pos, @next_turn)
       if chessman.instance_of?(King)
-        rook = get_rook(@turn, @old_pos, @new_pos)
+        rook = get_rook(gameboard, @turn, @old_pos, @new_pos)
         rook_pos = rook_pos(@turn, @old_pos, @new_pos)
         chessman.allow_castle(board, chessman, rook, @old_pos, rook_pos, @new_pos, @next_turn)
         chessman.castle(board, chessman, rook, @old_pos, rook_pos, @new_pos, @next_turn)

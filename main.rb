@@ -1,5 +1,4 @@
 require_relative 'lib/board'
-require_relative 'lib/team'
 require_relative 'lib/pieces'
 require_relative 'lib/gameplay'
 require_relative 'lib/checkmate'
@@ -51,6 +50,37 @@ class Chess
   def start_game
     start_msg
     input_choice
+  end
+
+  def self.save(game, board)
+    puts 'Enter save game filename: '
+    save_name = gets.chomp.downcase
+    File.open("saves/#{save_name}.yaml", 'w') { |file| file.write(game.to_yaml, board.to_yaml) }
+  end
+
+  def setup_loaded_board(board, data)
+    board.board = data[:board]
+    board.dbl_step_pawn = data[:dbl_step_pawn]
+    board.stepped_over = data[:stepped_over]
+    board.white_king = data[:white_king]
+    board.white_rook1 = data[:white_rook1]
+    board.white_rook2 = data[:white_rook2]
+    board.black_king = data[:black_king]
+    board.black_rook1 = data[:black_rook1]
+    board.black_rook2 = data[:black_rook2]
+  end
+
+  def load_game
+    loaded = []
+    exit if Dir.children('./saves').empty?
+    puts Dir.children('./saves').map { |fn| fn.gsub('.yaml', '') }
+    puts 'Enter filename you want to load: '
+    load_name = gets.chomp.downcase
+    YAML.load_stream(File.read("saves/#{load_name}.yaml")) { |doc| loaded << doc }
+    loaded_game = Game.new(loaded[0][:turn], loaded[0][:next_turn])
+    loaded_board = Board.new
+    setup_loaded_board(loaded_board, loaded[1])
+    Chess.new(loaded_game, loaded_board).start
   end
 end
 

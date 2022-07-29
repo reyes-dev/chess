@@ -1,5 +1,4 @@
 require_relative 'pieces.rb'
-require_relative 'saving'
 require 'yaml'
 
 class String
@@ -30,7 +29,6 @@ class Square
 end
 
 class Board
-  include Saving
   attr_accessor :board, :dbl_step_pawn, :stepped_over, :white_king, :black_king, :white_rook1, :white_rook2, :black_rook1, :black_rook2
 
   def initialize

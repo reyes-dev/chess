@@ -2,11 +2,9 @@ require_relative 'lib/board'
 require_relative 'lib/pieces'
 require_relative 'lib/gameplay'
 require_relative 'lib/checkmate'
-require_relative 'lib/saving'
 require 'colorize'
 
 class Chess
-  include Saving
   attr_accessor :game, :board
 
   def initialize(game, board)

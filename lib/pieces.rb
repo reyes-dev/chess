@@ -1,15 +1,13 @@
+require_relative 'moveset'
+require_relative 'en_passant'
+require_relative 'pawn_promotion'
+require_relative 'neighbor_tile'
+require_relative 'castling'
 require 'colorize'
-require_relative 'board.rb'
-require_relative 'moveset.rb'
-require_relative 'en_passant.rb'
-require_relative 'pawn_promotion.rb'
-require_relative 'neighbor_tile.rb'
-require_relative 'castling.rb'
 # All piece classes have a unique generate_legals method
 # that utilizes a module in a different file to
 # create an array of coordinates that the instance of
 # that class is allowed to move to on the board
-
 class Pawn
   include PawnMovement
   include EnPassant

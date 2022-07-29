@@ -69,8 +69,12 @@ class Chess
   end
 
   def load_game
+    begin
     loaded = []
-    exit if Dir.children('./saves').empty?
+    if Dir.children('./saves').empty?
+      puts "No files!".colorize(:light_blue) + ("\n"*4)
+      start_game
+    end
     puts Dir.children('./saves').map { |fn| fn.gsub('.yaml', '') }
     puts 'Enter filename you want to load: '
     load_name = gets.chomp.downcase
@@ -79,6 +83,9 @@ class Chess
     loaded_board = Board.new
     setup_loaded_board(loaded_board, loaded[1])
     Chess.new(loaded_game, loaded_board).start
+    rescue
+      retry
+    end
   end
 end
 

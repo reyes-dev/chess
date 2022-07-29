@@ -1,6 +1,6 @@
-require_relative 'pieces'
-require_relative 'team'
+require_relative 'pieces.rb'
 require_relative 'saving'
+require 'yaml'
 
 class String
   # Lets a Square object set the center of @space to piece.symbol
@@ -11,10 +11,10 @@ class String
   # the piece on a square but the square is empty
   def team
   end
-  
+
   def generate_legals(init = nil, board = nil)
   end
-  
+
   def legals
   end
 end
@@ -33,7 +33,7 @@ class Board
   include Saving
   attr_accessor :board, :dbl_step_pawn, :stepped_over, :white_king, :black_king, :white_rook1, :white_rook2, :black_rook1, :black_rook2
 
-  def initialize(dbl_step_pawn = nil, stepped_over = nil)
+  def initialize
     @board = {
       8 => { 1 => Square.new(Rook.new(:black, 'black'), :light_white),
              2 => Square.new(Knight.new(:black, 'black'), :light_red),
@@ -126,5 +126,19 @@ class Board
       i -= 1
     end
     print "    a  b  c  d  e  f  g  h"
+  end
+
+  def to_yaml
+    YAML.dump ({
+      :board => @board,
+      :dbl_step_pawn => @dbl_step_pawn,
+      :stepped_over => @stepped_over,
+      :white_king => @white_king,
+      :white_rook1 => @white_rook1,
+      :white_rook2 => @white_rook2,
+      :black_king => @black_king,
+      :black_rook1 => @black_rook1,
+      :black_rook2 => @black_rook2
+    })
   end
 end

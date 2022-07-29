@@ -221,7 +221,7 @@ class Game < Check
         redo unless legal?(chessman, @new_pos)
         move_from(@old_pos, board)
         move_to(chessman, @new_pos, board)
-        chessman.promote?(board, @new_pos, @turn) if chessman.instance_of?(Pawn)
+        #chessman.promote?(board, @new_pos, @turn) if chessman.instance_of?(Pawn)
         chessman.legals.clear
         moved_once(chessman)
         chessman.en_passantable(gameboard, board, chessman, @old_pos, @new_pos) if chessman.instance_of?(Pawn)

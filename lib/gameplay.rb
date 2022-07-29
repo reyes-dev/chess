@@ -1,24 +1,13 @@
 require_relative 'board'
-require_relative 'team'
 require_relative 'pieces'
 require_relative 'checkmate'
-require_relative 'saving'
 require_relative 'rooksandkings'
-# require_relative '../main'
 
 class Game < Check
   include RooksAndKings
-  include Saving
   attr_accessor :old_pos, :new_pos
 
-  def initialize(
-    old_pos = nil,
-    new_pos = nil,
-    turn = 'white',
-    next_turn = 'black'
-  )
-    @old_pos = old_pos
-    @new_pos = new_pos
+  def initialize(turn = 'white', next_turn = 'black')
     @turn = turn
     @next_turn = next_turn
     @letters = {
@@ -38,8 +27,11 @@ class Game < Check
     char.map!(&:to_i).reverse!
   end
 
-  def set_old_position
+  def set_old_position(board)
     loop do
+      puts "       --#{@turn}'s turn--\n"
+      puts "\n"
+      board.display_board
       puts "\n"
       puts 'Enter the coordinates of the piece you want to move '
       puts '[Q] to Quit or [S] to Save'
@@ -48,7 +40,7 @@ class Game < Check
       if @old_pos.join.match?(/^[a-h][1-8]$/)
         break
       elsif @old_pos.join.match?('s')
-        save_game
+        Chess.save(self, board)
       elsif @old_pos.join.match?('q')
         exit
       end
@@ -87,13 +79,17 @@ class Game < Check
     piece.moved = true if [Pawn, Rook, King].any? { |klass| piece.instance_of?(klass) }
   end
 
+  def to_yaml
+    YAML.dump ({
+      :turn => @turn,
+      :next_turn => @next_turn
+    })
+  end
+
   def play(gameboard)
     loop do
-      puts "       --#{@turn}'s turn--\n"
-      puts "\n"
       # Phase 1 -> displays board and let's player select a square
       # That isn't empty and holds a piece that matches their team
-      gameboard.display_board
       board = gameboard.board
       puts "\n #{@turn} is in check! \n" if check?(board, current_king(gameboard, @turn), @next_turn)
       if check?(board, current_king(gameboard, @turn),
@@ -104,7 +100,7 @@ class Game < Check
         puts "\n #{@turn} is in stalemate! Game is a draw!"
         break
       end
-      set_old_position
+      set_old_position(gameboard)
       chessman = board[@old_pos[0]][@old_pos[1]].piece
       redo if chessman == ' '
       redo unless chessman.team == @turn

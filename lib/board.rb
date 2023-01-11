@@ -117,13 +117,15 @@ class Board
 
   def display_board
     i = 8
+    print "    a  b  c  d  e  f  g  h\n".colorize(:red)
     while i >= 1
-      print " #{i} "
+      print " #{i} ".colorize(:red)
       @board[i].each { |k, v| print "#{v.space}" }
+      print " #{i} ".colorize(:red)
       puts "\n"
       i -= 1
     end
-    print "    a  b  c  d  e  f  g  h"
+    print "    a  b  c  d  e  f  g  h".colorize(:red)
   end
 
   def to_yaml

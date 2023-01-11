@@ -29,13 +29,13 @@ class Game < Check
 
   def set_old_position(board)
     loop do
-      puts "       --#{@turn}'s turn--\n"
+      system 'clear'
       puts "\n"
       board.display_board
+      puts "\n\n#{@turn}'s turn\n"
       puts "\n"
-      puts 'Enter the coordinates of the piece you want to move '
       puts '[Q] to Quit or [S] to Save'
-      puts "\n"
+      puts 'Enter starting position: '
       @old_pos = gets.chomp.split('')
       if @old_pos.join.match?(/^[a-h][1-8]$/)
         break
@@ -131,8 +131,6 @@ class Game < Check
       moved_once(chessman)
       chessman.en_passantable(gameboard, board, chessman, @old_pos, @new_pos) if chessman.instance_of?(Pawn)
       switch_turns
-
-      puts "\n"
     end
   end
 
@@ -184,7 +182,6 @@ class Game < Check
         moved_once(chessman)
         chessman.en_passantable(gameboard, board, chessman, @old_pos, @new_pos) if chessman.instance_of?(Pawn)
         switch_turns
-        puts "\n"
       elsif @turn == 'black'
         board = gameboard.board
         puts "\n #{@turn} is in check! \n" if check?(board, current_king(gameboard, @turn), @next_turn)
@@ -196,11 +193,11 @@ class Game < Check
           puts "\n #{@turn} is in stalemate! Game is a draw!"
           break
         end
-        puts "       --#{@turn}'s turn--\n"
-        puts "\n"
+        system 'clear'
+        puts
         gameboard.display_board
-        puts "\n"
-        sleep 2
+        puts "\n#{@turn}'s turn..."
+        sleep 1
         @old_pos = random_piece(board)
         chessman = board[@old_pos[0]][@old_pos[1]].piece
         redo if chessman == ' '
@@ -221,12 +218,10 @@ class Game < Check
         redo unless legal?(chessman, @new_pos)
         move_from(@old_pos, board)
         move_to(chessman, @new_pos, board)
-        #chessman.promote?(board, @new_pos, @turn) if chessman.instance_of?(Pawn)
         chessman.legals.clear
         moved_once(chessman)
         chessman.en_passantable(gameboard, board, chessman, @old_pos, @new_pos) if chessman.instance_of?(Pawn)
         switch_turns
-        puts "\n"
       end
     end
   end

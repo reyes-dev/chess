@@ -21,20 +21,20 @@ class Chess
   end
 
   def start_msg
-    puts 'Welcome to Ruby Chess!'.colorize(:light_red)
+    system 'clear'
+    puts '                      Welcome to Ruby Chess!'.colorize(:light_red)
+    puts '        Each turn you will be asked to enter two inputs.'
     puts ' '
-    puts 'Each turn you will have to enter two inputs.'
+    puts '  Step One: '.colorize(:light_red)
+    puts '    Enter the coordinates of the piece you want to move.'
     puts ' '
-    puts 'Step One: '.colorize(:light_red)
-    puts 'Enter the coordinates of the piece you want to move.'
+    puts '  Step Two: '.colorize(:light_red)
+    puts '    Enter the coordinates of the square you want to land on.'
     puts ' '
-    puts 'Step Two: '.colorize(:light_red)
-    puts 'Enter the coordinates of the square you want to land on.'
-    puts ' '
-    puts 'Enter one of the following to play: '
-    puts '   [1]'.colorize(:light_red) + ' to play a ' + 'new game '.colorize(:light_red) + 'against Human opponent.'
-    puts '   [2]'.colorize(:light_red) + ' to play a ' + 'new game '.colorize(:light_red) + 'against AI opponent.'
-    puts '   [3]'.colorize(:light_red) + ' to ' + 'load game '.colorize(:light_red)
+    puts '  Enter one of the following to play: '
+    puts '     [1]'.colorize(:light_red) + ' to play a ' + 'new game '.colorize(:light_red) + 'against Human opponent.'
+    puts '     [2]'.colorize(:light_red) + ' to play a ' + 'new game '.colorize(:light_red) + 'against AI opponent.'
+    puts '     [3]'.colorize(:light_red) + ' to ' + 'load game '.colorize(:light_red)
     puts ' '
     puts ' '
   end

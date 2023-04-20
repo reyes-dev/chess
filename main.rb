@@ -35,6 +35,7 @@ class Chess
     puts '     [1]'.colorize(:light_red) + ' to play a ' + 'new game '.colorize(:light_red) + 'against Human opponent.'
     puts '     [2]'.colorize(:light_red) + ' to play a ' + 'new game '.colorize(:light_red) + 'against AI opponent.'
     puts '     [3]'.colorize(:light_red) + ' to ' + 'load game '.colorize(:light_red)
+    puts '     [4]'.colorize(:light_red) + ' to ' + 'exit game  '.colorize(:light_red)
     puts ' '
     puts ' '
   end
@@ -48,6 +49,8 @@ class Chess
         start_AI
       elsif choice.match?(/^3{1}$/)
         load_game
+      elsif choice.match?(/^4{1}$/)
+        exit
       end
     end
   end

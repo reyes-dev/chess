@@ -86,6 +86,17 @@ class Game < Check
               })
   end
 
+  def restart_game
+    loop do
+      puts 'Enter [m] to return to main menu.'
+      char = gets.chomp
+      if char == 'm'
+        Chess.new(Game.new, Board.new).start_game
+        break
+      end
+    end
+  end
+
   def play(gameboard)
     loop do
       # Phase 1 -> displays board and let's player select a square
@@ -95,10 +106,10 @@ class Game < Check
       if check?(board, current_king(gameboard, @turn),
                 @next_turn) && mate?(board, current_king(gameboard, @turn), @turn, @next_turn)
         puts "\n #{@turn} is in checkmate! #{@next_turn} wins the game!"
-        break
+        restart_game
       elsif stalemate?(board, current_king(gameboard, @turn), @turn, @next_turn)
         puts "\n #{@turn} is in stalemate! Game is a draw!"
-        break
+        restart_game
       end
       set_old_position(gameboard)
       chessman = board[@old_pos[0]][@old_pos[1]].piece
@@ -153,10 +164,10 @@ class Game < Check
         if check?(board, current_king(gameboard, @turn),
                   @next_turn) && mate?(board, current_king(gameboard, @turn), @turn, @next_turn)
           puts "\n #{@turn} is in checkmate! #{@next_turn} wins the game!"
-          break
+          restart_game
         elsif stalemate?(board, current_king(gameboard, @turn), @turn, @next_turn)
           puts "\n #{@turn} is in stalemate! Game is a draw!"
-          break
+          restart_game
         end
         set_old_position(gameboard)
         chessman = board[@old_pos[0]][@old_pos[1]].piece
@@ -188,10 +199,10 @@ class Game < Check
         if check?(board, current_king(gameboard, @turn),
                   @next_turn) && mate?(board, current_king(gameboard, @turn), @turn, @next_turn)
           puts "\n #{@turn} is in checkmate! #{@next_turn} wins the game!"
-          break
+          restart_game
         elsif stalemate?(board, current_king(gameboard, @turn), @turn, @next_turn)
           puts "\n #{@turn} is in stalemate! Game is a draw!"
-          break
+          restart_game
         end
         system 'clear'
         puts

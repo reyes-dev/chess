@@ -1,3 +1,9 @@
+<a href="https://asciinema.org/a/tdpwirKSVvERIMEge1D8T8r2M" target="_blank" >
+<p align="center">
+<img src="https://asciinema.org/a/tdpwirKSVvERIMEge1D8T8r2M.svg?autoplay=1" />    
+</p>
+</a>
+
 <h1 align="center">
     CLI Chess 
 </h1>
@@ -5,16 +11,17 @@
 Traditional Chess, playable from the command line, written from scratch in Ruby.
 
 ## Description
-A Chess game you can play. You can play against a simple-minded CPU that makes random moves or another human. It enforces the main rules of the game, including restricted piece movements and check/checkmate, and includes the essentials features such 6 types of pieces, castling, pawn promotion, en-passant, being multiplayer, a colored board and black/white team colors. I've used modularization to organize code into feature-specific files, classes to model individual pieces and concepts such as the board and gameplay loop, and YAML serialization to save and load games.
+A Chess game [you can play here](https://replit.com/@reyesdev/chess). You can play against a simple-minded CPU that makes random moves or another human. It enforces the main rules of the game, including restricted piece movements and check/checkmate, and includes the essentials features such 6 types of pieces, castling, pawn promotion, en-passant, being multiplayer, a colored board and black/white team colors. I've used modularization to organize code into feature-specific files, classes to model individual pieces and concepts such as the board and gameplay loop, and YAML serialization to save and load games.
 
 ## Features
-- Human vs Human
-- Human vs AI
-- Save and Load your games
-- Unicode graphics
+- Win by putting your enemy in checkmate
+- Move around the board and take enemy pieces
+- Play Human vs Human, or Human vs AI
+- Save and load your games from the main menu
+- Unicode graphics and color
 
 ## Play online
-[Link to the replit](https://replit.com/@reyesdev/chess) where you can easily play it from your browser. Just hit the green run button and wait a moment for the dependencies to install.
+[Link to the live replit](https://replit.com/@reyesdev/chess) where you can easily play it from your browser. Just hit the green run button and wait a moment for the dependencies to install.
 
 ## Run locally
 Step-by-step instructions on how to run chess from your very own terminal! *Note: You will need to have Ruby and Git installed.*

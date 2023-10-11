@@ -4,9 +4,9 @@
 
 Traditional Chess, playable from the command line, written from scratch in Ruby.
 
-<a href="https://asciinema.org/a/tdpwirKSVvERIMEge1D8T8r2M" target="_blank" >
+<a href="https://asciinema.org/a/tdpwirKSVvERIMEge1D8T8r2M?autoplayer=true" target="_blank" >
 <p align="center">
-<img src="https://asciinema.org/a/tdpwirKSVvERIMEge1D8T8r2M.svg?autoplay=1" />    
+<img src="https://asciinema.org/a/tdpwirKSVvERIMEge1D8T8r2M.svg" />    
 </p>
 </a>
 
